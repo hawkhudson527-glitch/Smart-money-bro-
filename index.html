@@ -1,0 +1,2180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0e7a86">
+<meta name="description" content="Smart Money Bro - plan pocket money, track spending, save for something brilliant, and learn what banks do in plain kid-friendly language.">
+<title>Smart Money Bro — Pocket Money Command Center</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='24' fill='%230e7a86'/%3E%3Ctext x='50' y='73' font-size='58' text-anchor='middle'%3E%F0%9F%92%B0%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#fffdf8; --bg2:#f4f8fb; --panel:#ffffff;
+  --ink:#181d2e; --ink2:#2a3247; --muted:#66708c;
+  --teal:#0ea5a5; --teal-d:#0a8585; --teal-l:#dcf7f5;
+  --coral:#ff5f6d; --coral-l:#ffe9eb;
+  --grape:#7c4dff; --grape-l:#efe8ff;
+  --pink:#ff45a0; --pink-l:#ffe4f2;
+  --tang:#ff8f3c; --tang-l:#fff0e2;
+  --sun:#ffc93c;  --sun-l:#fff6dc;
+  --lime:#31c96a; --lime-l:#ddf9e7;
+  --sky:#3ba7ff;  --sky-l:#e3f2ff;
+  --navy:#2b2f8f; --gold:#ffc93c;
+  --line:#e8ecf5; --line2:#f0f3fa;
+  --good:#17a86b; --warn:#e08a08; --bad:#f0455c;
+  --shadow:0 3px 0 var(--line), 0 8px 22px rgba(60,60,130,.09);
+  --shadow-lg:0 20px 55px rgba(60,60,130,.2);
+  --r:26px;
+  --head:"Fredoka","Nunito",system-ui,sans-serif;
+  --body:"Nunito",-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;
+  --c1:#0ea5a5;--c2:#ff5f6d;--c3:#ffc93c;--c4:#31c96a;--c5:#3ba7ff;--c6:#7c4dff;--c7:#ff45a0;--c8:#ff8f3c;--c9:#94a0bd;
+}
+@media (prefers-color-scheme: dark){
+  :root{--bg:#12142a;--bg2:#1a1d38;--panel:#1e2240;--ink:#f2f4ff;--ink2:#dfe4fb;--muted:#a0a8cc;
+    --line:#2c3157;--line2:#252a4c;--teal-l:#0e3b3e;--coral-l:#3a1c24;--grape-l:#26205a;--pink-l:#3a1b34;
+    --tang-l:#3a2618;--sun-l:#3a3016;--lime-l:#123a25;--sky-l:#132b45;
+    --shadow:0 2px 4px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.3);--shadow-lg:0 20px 55px rgba(0,0,0,.5);}
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{margin:0;color:var(--ink);
+  background:var(--bg);
+  background-image:
+    radial-gradient(820px 460px at 92% -10%, var(--sun-l) 0%, transparent 60%),
+    radial-gradient(720px 420px at -8% 2%, var(--sky-l) 0%, transparent 58%),
+    radial-gradient(680px 400px at 20% 108%, var(--grape-l) 0%, transparent 60%),
+    radial-gradient(620px 380px at 84% 96%, var(--pink-l) 0%, transparent 58%);
+  background-attachment:fixed;
+  font-family:var(--body);
+  font-weight:700;-webkit-font-smoothing:antialiased;line-height:1.55}
+h1,h2,h3,h4{margin:0;font-family:var(--head);font-weight:600;letter-spacing:-.005em}
+button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit}
+input,select{font-family:inherit;font-size:16px}
+a{color:inherit;text-decoration:none}
+
+.wrap{max-width:1180px;margin:0 auto;padding:0 24px}
+@media(max-width:640px){ .wrap{padding:0 16px} }
+/* The ⚙️ gear is the only route into Settings, so it must never be squeezed off
+   the edge. On narrow screens the header "Add money" button gives way instead —
+   the dashboard already carries two of its own. */
+.gearbtn{flex:none;min-width:46px;padding-left:0;padding-right:0}
+@media(max-width:600px){ .addbtn{display:none} .logo{font-size:17px} }
+@media(max-width:420px){ .logo span{display:none} }
+
+/* ---------------- top bar ---------------- */
+.bar{position:sticky;top:0;z-index:40;background:color-mix(in srgb,var(--bg) 88%,transparent);
+  backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.bar .in{display:flex;align-items:center;gap:28px;height:70px}
+.logo{display:flex;align-items:center;gap:10px;font-family:var(--head);font-weight:600;font-size:19px;flex:none}
+.logo i{width:34px;height:34px;border-radius:11px;background:linear-gradient(140deg,var(--grape),var(--pink));
+  display:grid;place-items:center;font-style:normal;font-size:17px;box-shadow:0 3px 10px rgba(124,77,255,.35)}
+.tabs{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;flex:1}
+.tabs::-webkit-scrollbar{display:none}
+.tabs a{padding:9px 15px;border-radius:999px;font-size:15px;font-weight:800;color:var(--muted);white-space:nowrap;
+  display:flex;align-items:center;gap:7px}
+.tabs a:before{content:attr(data-e);font-size:16px}
+.tabs a:hover{color:var(--ink);background:var(--bg2)}
+.tabs a.on{color:#fff;background:linear-gradient(135deg,var(--teal),var(--sky));
+  box-shadow:0 3px 10px rgba(14,165,165,.3)}
+.bar .act{display:flex;gap:9px;flex:none;margin-left:auto}
+
+/* ---------------- buttons ---------------- */
+/* chunky "game" buttons: solid colour with a darker lip underneath */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;
+  background:var(--teal);color:#fff;font-family:var(--head);
+  font-weight:600;font-size:16px;padding:13px 24px;border-radius:999px;transition:.12s;
+  border:0;box-shadow:0 4px 0 var(--teal-d), 0 8px 18px rgba(14,165,165,.28)}
+.btn:hover{filter:brightness(1.05)}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--teal-d), 0 3px 10px rgba(14,165,165,.28)}
+.btn.ghost{background:var(--panel);color:var(--ink);box-shadow:0 4px 0 var(--line), 0 8px 18px rgba(60,60,130,.08)}
+.btn.ghost:active{box-shadow:0 1px 0 var(--line)}
+.btn.coral{background:var(--coral);box-shadow:0 4px 0 #d63d52, 0 8px 18px rgba(255,95,109,.3)}
+.btn.coral:active{box-shadow:0 1px 0 #d63d52}
+.btn.grape{background:var(--grape);box-shadow:0 4px 0 #5f33d6, 0 8px 18px rgba(124,77,255,.3)}
+.btn.grape:active{box-shadow:0 1px 0 #5f33d6}
+.btn.sun{background:var(--sun);color:#5a3f06;box-shadow:0 4px 0 #e0a712, 0 8px 18px rgba(255,201,60,.35)}
+.btn.sun:active{box-shadow:0 1px 0 #e0a712}
+.btn.sm{padding:10px 17px;font-size:14px}
+.btn.wide{width:100%;padding:16px;font-size:17px}
+.btn.danger{background:var(--panel);color:var(--bad);box-shadow:0 4px 0 var(--line)}
+
+/* ---------------- hero ---------------- */
+.hero{display:grid;grid-template-columns:1fr 1fr;gap:44px;align-items:center;padding:34px 0 34px}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;background:var(--sun-l);color:var(--warn);
+  border:2px solid var(--sun);font-weight:800;font-size:13.5px;padding:7px 15px;border-radius:999px;
+  margin-bottom:18px;letter-spacing:.01em}
+.hero h1{font-family:var(--head);font-size:clamp(34px,4.6vw,54px);font-weight:600;line-height:1.1;letter-spacing:-.01em}
+.hero h1 em{font-style:normal;background:linear-gradient(105deg,var(--grape),var(--pink) 45%,var(--tang));
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p.lede{color:var(--ink2);font-size:18px;line-height:1.6;margin:18px 0 26px;max-width:36ch;font-weight:700}
+.hero .cta{display:flex;gap:12px;flex-wrap:wrap}
+@media(max-width:860px){
+  .hero{grid-template-columns:1fr;gap:34px;padding:34px 0 26px}
+  .hero p.lede{font-size:17px;margin:18px 0 24px}
+}
+
+/* ---------------- card illustration ---------------- */
+.art{position:relative;height:400px}
+@media(max-width:860px){ .art{height:320px} }
+.bankcard{position:absolute;left:6%;top:8%;width:74%;aspect-ratio:1.6/1;border-radius:26px;
+  background:linear-gradient(125deg,#7c4dff 0%,#ff45a0 52%,#ff8f3c 100%);
+  transform:rotate(-5deg);box-shadow:var(--shadow-lg);padding:22px;color:#fff;display:flex;flex-direction:column;
+  border:4px solid #fff}
+.bankcard:before{content:"";position:absolute;right:-30px;bottom:-40px;width:150px;height:150px;border-radius:50%;
+  background:rgba(255,255,255,.16)}
+.bankcard .chip{width:46px;height:34px;border-radius:9px;background:linear-gradient(160deg,#ffe9a3,#f5c53d);
+  box-shadow:0 2px 0 rgba(0,0,0,.12)}
+.bankcard .face{position:absolute;left:78px;top:26px;font-size:30px}
+.bankcard .bn{font-family:var(--head);font-weight:600;font-size:clamp(20px,2.5vw,28px);margin-top:auto;
+  text-shadow:0 2px 6px rgba(0,0,0,.18)}
+.bankcard .bs{font-weight:800;font-size:13.5px;opacity:.92;margin-top:4px;position:relative;z-index:1}
+.bankcard .bal{position:absolute;right:22px;bottom:20px;text-align:right}
+.bankcard .bal span{display:block;font-size:10px;letter-spacing:.1em;text-transform:uppercase;opacity:.75;font-weight:800}
+.bankcard .bal b{font-size:clamp(19px,2.4vw,26px);font-weight:800;letter-spacing:-.03em}
+.coin{position:absolute;border-radius:50%;background:linear-gradient(160deg,#f9dd6e,#eeb61d);
+  display:grid;place-items:center;font-weight:800;color:#4a3708;box-shadow:0 6px 18px rgba(200,150,10,.3)}
+.coin.a{width:74px;height:74px;font-size:31px;left:0;top:0}
+.coin.b{width:56px;height:56px;font-size:24px;right:2%;bottom:14%}
+.jars{position:absolute;left:16%;bottom:0;display:flex;gap:6px}
+.jar{width:106px;height:132px;border-radius:14px;background:var(--bg2);border:7px solid #b3c5de;
+  display:flex;align-items:flex-end;justify-content:center;padding-bottom:12px;font-weight:800;font-size:15px}
+.jar.s{border-color:#eab6ae}
+@media(max-width:860px){ .jar{width:84px;height:104px;font-size:13px} .coin.a{width:56px;height:56px;font-size:24px} }
+@media(max-width:400px){ .jars{left:6%} }
+
+/* ---------------- sections & cards ---------------- */
+.sec{padding:12px 0 40px}
+.sec-h{display:flex;align-items:flex-end;gap:16px;margin-bottom:20px;flex-wrap:wrap}
+.sec-h h2{font-family:var(--head);font-size:29px;font-weight:600;letter-spacing:-.005em}
+.sec-h p{color:var(--muted);font-size:15.5px;margin:5px 0 0;font-weight:700}
+.sec-h .right{margin-left:auto;display:flex;gap:9px}
+
+.grid{display:grid;gap:18px}
+.g3{grid-template-columns:repeat(3,1fr)}
+.g4{grid-template-columns:repeat(4,1fr)}
+.g2{grid-template-columns:1.15fr .85fr}
+.g2e{grid-template-columns:1fr 1fr}
+@media(max-width:1000px){ .g4{grid-template-columns:repeat(2,1fr)} }
+@media(max-width:900px){ .g2,.g2e{grid-template-columns:1fr} }
+@media(max-width:640px){ .g3{grid-template-columns:1fr} }
+@media(max-width:460px){ .g4{grid-template-columns:1fr} }
+
+.card{background:var(--panel);border:2px solid var(--line);border-radius:var(--r);padding:22px;box-shadow:var(--shadow)}
+.card h3{font-family:var(--head);font-size:19px;font-weight:600;display:flex;align-items:center;gap:9px}
+.card h3 .more{margin-left:auto;font-size:14px;color:var(--teal);font-weight:800;font-family:var(--body)}
+.card .note{color:var(--muted);font-size:14px;margin-top:5px;font-weight:700}
+.empty{color:var(--muted);font-size:15px;text-align:center;padding:34px 10px;line-height:1.65;font-weight:700}
+.empty b{color:var(--ink)}
+
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:20px 22px;box-shadow:var(--shadow)}
+.stat span{display:block;font-size:13px;font-weight:800;letter-spacing:.02em;color:var(--muted)}
+.stat b{display:block;font-family:var(--head);font-size:36px;font-weight:600;letter-spacing:-.01em;margin-top:6px;line-height:1}
+.stat small{display:block;color:var(--muted);font-size:13.5px;margin-top:8px;font-weight:700;line-height:1.45}
+.stat.tealbg{background:var(--teal);border-color:var(--teal);color:#fff}
+.stat.tealbg span,.stat.tealbg small{color:rgba(255,255,255,.82)}
+.stat.mint{background:color-mix(in srgb,var(--good) 8%,var(--panel));border-color:color-mix(in srgb,var(--good) 22%,var(--line))}
+.stat.blush{background:color-mix(in srgb,var(--coral) 7%,var(--panel));border-color:color-mix(in srgb,var(--coral) 22%,var(--line))}
+/* colour-coded stat tiles */
+.stat{position:relative;overflow:hidden}
+.stat:before{content:"";position:absolute;left:0;top:0;bottom:0;width:6px;background:var(--tint,var(--teal))}
+.stat{padding-left:26px}
+.stat.t-sky{--tint:var(--sky);background:linear-gradient(135deg,var(--sky-l),var(--panel) 70%)}
+.stat.t-tang{--tint:var(--tang);background:linear-gradient(135deg,var(--tang-l),var(--panel) 70%)}
+.stat.t-lime{--tint:var(--lime);background:linear-gradient(135deg,var(--lime-l),var(--panel) 70%)}
+.stat.t-grape{--tint:var(--grape);background:linear-gradient(135deg,var(--grape-l),var(--panel) 70%)}
+.stat.t-pink{--tint:var(--pink);background:linear-gradient(135deg,var(--pink-l),var(--panel) 70%)}
+.stat .emo{position:absolute;right:14px;top:12px;font-size:26px;opacity:.65}
+
+/* ---------------- cheer: a floating speech bubble, no boxy banner ---------------- */
+.cheer{--a1:var(--grape); --a2:var(--pink);
+  position:relative;display:flex;align-items:center;margin:0 0 24px;background:none;padding:0}
+.cheer.calm{--a1:var(--teal); --a2:var(--sky)}
+.cheer.gold{--a1:var(--tang); --a2:var(--sun)}
+
+/* the medallion: the message's own emoji, never a character */
+.cheer .medal{position:relative;z-index:2;flex:none;width:78px;height:78px;border-radius:50%;
+  background:linear-gradient(150deg,var(--a2),var(--a1));display:grid;place-items:center;font-size:38px;
+  border:4px solid var(--panel);box-shadow:0 6px 0 color-mix(in srgb,var(--a1) 55%,#000), 0 10px 26px rgba(60,60,130,.2);
+  margin-right:-22px;animation:bob 3s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-7px) rotate(3deg)}}
+.cheer .spark{position:absolute;font-size:16px;animation:twinkle 1.9s ease-in-out infinite;z-index:3}
+.cheer .spark.s1{left:56px;top:-6px}
+.cheer .spark.s2{left:-6px;bottom:4px;animation-delay:.7s}
+@keyframes twinkle{0%,100%{opacity:.3;transform:scale(.75)}50%{opacity:1;transform:scale(1.15)}}
+
+/* the bubble itself floats on the page — the tail points back at the medallion */
+.cheer .bubble{position:relative;flex:1;min-width:220px;background:var(--panel);color:var(--ink);
+  border:3px solid var(--a1);border-radius:26px;padding:18px 22px 18px 34px;
+  box-shadow:0 6px 0 color-mix(in srgb,var(--a1) 22%,var(--panel)), 0 14px 30px rgba(60,60,130,.12)}
+.cheer .bubble:after{content:"";position:absolute;left:26px;bottom:-15px;width:20px;height:20px;
+  background:var(--panel);border-right:3px solid var(--a1);border-bottom:3px solid var(--a1);
+  transform:rotate(52deg) skew(-8deg);border-radius:0 0 6px 0}
+.cheer .bubble b{display:block;font-family:var(--head);font-size:22px;font-weight:600;line-height:1.2}
+.cheer .bubble span{display:block;font-size:15px;margin-top:7px;font-weight:700;line-height:1.5;color:var(--ink2)}
+
+/* the starburst sticker with the key number, pinned to the bubble's edge */
+.cheer .stamp{flex:none;width:92px;height:92px;display:grid;place-items:center;text-align:center;z-index:2;
+  background:linear-gradient(150deg,#fff3b0,var(--sun));color:#5a3f06;margin-left:-26px;
+  clip-path:polygon(50% 0%,61% 20%,83% 12%,79% 35%,100% 50%,79% 65%,83% 88%,61% 80%,50% 100%,39% 80%,17% 88%,21% 65%,0% 50%,21% 35%,17% 12%,39% 20%);
+  transform:rotate(-10deg);animation:wob 3.4s ease-in-out infinite}
+@keyframes wob{0%,100%{transform:rotate(-10deg) scale(1)}50%{transform:rotate(6deg) scale(1.06)}}
+.cheer .stamp b{display:block;font-family:var(--head);font-size:23px;font-weight:600;line-height:1}
+.cheer .stamp small{display:block;font-size:10.5px;font-weight:800;margin-top:2px;opacity:.75}
+@media(max-width:640px){
+  .cheer{flex-wrap:wrap}
+  .cheer .medal{width:58px;height:58px;font-size:28px;margin-right:-18px}
+  .cheer .spark.s1{left:40px}
+  .cheer .bubble{padding:15px 18px 15px 28px;order:2;min-width:0}
+  .cheer .bubble b{font-size:18px} .cheer .bubble span{font-size:14px}
+  .cheer .stamp{width:70px;height:70px;margin-left:-20px} .cheer .stamp b{font-size:18px}
+}
+
+/* ---------------- confetti ---------------- */
+#confetti{position:fixed;inset:0;pointer-events:none;z-index:200;overflow:hidden}
+#confetti i{position:absolute;width:11px;height:16px;border-radius:2px;animation:fall linear forwards}
+@keyframes fall{0%{transform:translateY(-12vh) rotate(0);opacity:1}100%{transform:translateY(108vh) rotate(760deg);opacity:.9}}
+
+/* ---------------- Cent, the coin mascot ---------------- */
+.mascot{width:132px;height:132px;flex:none;overflow:visible}
+.mascot .m-all{animation:mbob 3.2s ease-in-out infinite;transform-origin:80px 140px;transform-box:view-box}
+@keyframes mbob{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-6px) rotate(2deg)}}
+.mascot .m-eye{transform-origin:center;transform-box:fill-box;animation:mblink 5s infinite}
+@keyframes mblink{0%,93%,100%{transform:scaleY(1)}96%{transform:scaleY(.12)}}
+.mascot .m-arm{transform-origin:right center;transform-box:fill-box;animation:mwave 2.6s ease-in-out infinite}
+@keyframes mwave{0%,100%{transform:rotate(0)}50%{transform:rotate(-22deg)}}
+.mascot .m-mouth{transform-origin:center;transform-box:fill-box}
+.mascot.talk .m-mouth{animation:mtalk .3s ease-in-out infinite alternate}
+@keyframes mtalk{from{transform:scaleY(.5)}to{transform:scaleY(1.35)}}
+.mascot.talk .m-all{animation-duration:1.9s}
+.mascot.small{width:74px;height:74px}
+
+/* ---------------- narrated lesson ---------------- */
+.narr{display:flex;align-items:flex-start;gap:6px;margin:6px 0 4px}
+.narr .say{position:relative;flex:1;background:var(--bg2);border:3px solid var(--teal);border-radius:24px;
+  padding:18px 20px;min-height:150px;font-size:15.5px;font-weight:700;line-height:1.65;color:var(--ink2)}
+.narr .say:before{content:"";position:absolute;left:-12px;top:34px;width:20px;height:20px;background:var(--bg2);
+  border-left:3px solid var(--teal);border-bottom:3px solid var(--teal);transform:rotate(45deg);border-radius:0 0 0 5px}
+.narr .say p{margin:0 0 12px}.narr .say p:last-child{margin:0}
+.narr .say .cent-says{color:var(--teal);font-weight:800;font-size:15px;margin-bottom:10px}
+.narr .say b{font-weight:900;color:var(--ink)}
+.narr .say .callout{margin:12px 0 0;font-size:15px}
+@media(max-width:640px){
+  .narr{flex-direction:column;align-items:center;gap:0}
+  .narr .say{width:100%;margin-top:-8px}
+  .narr .say:before{left:38px;top:-12px;transform:rotate(135deg)}
+}
+.steps{display:flex;align-items:center;gap:10px;margin-top:14px;flex-wrap:wrap}
+.steps .pg{display:flex;gap:6px;margin-left:auto}
+.steps .pg i{width:9px;height:9px;border-radius:50%;background:var(--line)}
+.steps .pg i.on{background:var(--teal);transform:scale(1.35)}
+.steps .pg i.seen{background:color-mix(in srgb,var(--teal) 45%,var(--line))}
+.spk{border:0;background:var(--sun-l);color:var(--warn);font-weight:800;font-size:13.5px;padding:9px 15px;
+  border-radius:999px;border:2px solid var(--sun)}
+.spk.off{background:var(--bg2);color:var(--muted);border-color:var(--line)}
+/* deliberately understated — present for a parent who goes looking, invisible otherwise */
+.quiet{display:block;width:100%;margin-top:22px;padding:10px;background:none;border:0;color:var(--muted);
+  font-family:var(--body);font-weight:700;font-size:13px;opacity:.6;text-align:center}
+.quiet:hover{opacity:1;color:var(--teal)}
+
+/* ---------------- money hack: flip-to-reveal collectible ---------------- */
+.hack{perspective:1400px}
+.hackin{position:relative;transform-style:preserve-3d;transition:transform .62s cubic-bezier(.4,.2,.2,1);
+  min-height:290px}
+.hack.flip .hackin{transform:rotateY(180deg)}
+.face-a,.face-b{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;
+  border-radius:26px;padding:24px;display:flex;flex-direction:column;border:3px solid #fff;box-shadow:var(--shadow-lg)}
+.face-a{background:linear-gradient(140deg,var(--sky),var(--grape) 62%,var(--pink));color:#fff;
+  cursor:pointer;overflow:hidden;padding:20px}
+.face-b{background:linear-gradient(140deg,var(--sun-l),var(--panel) 55%);transform:rotateY(180deg);
+  border-color:var(--sun);overflow:hidden;padding:20px}
+
+/* the thought bubble itself */
+.thought{position:relative;background:var(--panel);color:var(--ink);border-radius:34px;padding:20px 22px;
+  text-align:center;box-shadow:0 6px 0 rgba(0,0,0,.1);flex:1;display:flex;flex-direction:column;
+  align-items:center;justify-content:center}
+/* the little bumps that make it a thought, not a speech, bubble */
+.thought:before,.thought:after{content:"";position:absolute;background:var(--panel);border-radius:50%;
+  box-shadow:0 4px 0 rgba(0,0,0,.08)}
+.thought:before{width:26px;height:26px;left:26px;bottom:-17px}
+.thought:after{width:14px;height:14px;left:12px;bottom:-36px}
+.hack .kicker{font-size:12px;font-weight:800;letter-spacing:.13em;text-transform:uppercase;color:var(--grape)}
+.hack .bigemo{font-size:56px;margin:6px 0 4px;animation:bob 3s ease-in-out infinite}
+.hack .teaser{font-family:var(--head);font-size:22px;font-weight:600;line-height:1.2;max-width:20ch}
+.hack .tap{margin-top:14px;background:var(--grape);color:#fff;font-family:var(--head);font-weight:600;
+  font-size:14.5px;padding:9px 18px;border-radius:999px;box-shadow:0 4px 0 #5f33d6;
+  animation:pulse 2.2s ease-in-out infinite}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+/* the buddy doing the thinking, tucked into the corner */
+.thinker{position:absolute;left:16px;bottom:10px;font-size:38px;z-index:2;
+  animation:bob 3.4s ease-in-out infinite;filter:drop-shadow(0 3px 5px rgba(0,0,0,.22))}
+.face-b .bh{display:flex;align-items:center;gap:11px;font-family:var(--head);font-size:19px;font-weight:600;
+  line-height:1.2}
+.face-b .bh em{font-style:normal;font-size:30px}
+.face-b .bw{margin-top:10px;font-size:15px;font-weight:700;line-height:1.55;color:var(--ink2);flex:1;
+  overflow:auto}
+.face-b .bf{display:flex;gap:9px;align-items:center;margin-top:12px;flex-wrap:wrap}
+.hackbar{display:flex;align-items:center;gap:10px;margin-top:14px;flex-wrap:wrap}
+.hackbar .cnt{font-weight:800;font-size:14px;color:var(--muted)}
+.dots{display:flex;gap:5px;margin-left:auto}
+.dots i{width:9px;height:9px;border-radius:50%;background:var(--line);transition:.2s}
+.dots i.got{background:var(--lime)}
+.dots i.on{background:var(--sun);transform:scale(1.45)}
+.got-stamp{display:inline-flex;align-items:center;gap:6px;background:var(--lime-l);color:var(--good);
+  border:2px solid var(--lime);font-weight:800;font-size:13px;padding:6px 13px;border-radius:999px}
+
+/* ---------------- parent match ---------------- */
+.match{border-radius:20px;padding:22px;background:linear-gradient(135deg,var(--lime-l),var(--panel) 75%);
+  border:2px solid color-mix(in srgb,var(--lime) 40%,var(--line))}
+.match .mh{display:flex;align-items:center;gap:12px}
+.match .mh i{font-size:28px;font-style:normal}
+.match .mh b{font-size:17px;font-weight:800;letter-spacing:-.025em}
+.match .amt{font-size:36px;font-weight:800;letter-spacing:-.04em;color:var(--good);margin:14px 0 4px;line-height:1}
+.ribbon{display:inline-flex;align-items:center;gap:7px;background:var(--lime);color:#08351f;font-weight:800;
+  font-size:12.5px;padding:6px 12px;border-radius:99px;letter-spacing:.02em}
+
+/* ---------------- reward wall ---------------- */
+.rw{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:12px;margin-top:16px}
+.rw div{border-radius:16px;padding:14px 10px;text-align:center;border:1px solid var(--line);background:var(--bg2)}
+.rw div.on{background:linear-gradient(150deg,var(--sun-l),var(--tang-l));border-color:var(--sun)}
+.rw i{font-size:28px;font-style:normal;display:block;filter:grayscale(1);opacity:.35}
+.rw div.on i{filter:none;opacity:1}
+.rw b{display:block;font-size:12.5px;font-weight:800;margin-top:7px;letter-spacing:-.01em}
+.rw small{display:block;font-size:11px;color:var(--muted);font-weight:600;margin-top:3px;line-height:1.35}
+
+/* ---------------- budget jars ---------------- */
+.eyebrow-sm{color:var(--coral);font-weight:800;font-size:12.5px;letter-spacing:.13em;text-transform:uppercase;margin-bottom:9px}
+.panel-h{display:flex;align-items:flex-start;gap:16px;margin-bottom:22px}
+.panel-h h3{font-size:24px;font-weight:800;letter-spacing:-.035em;display:block}
+.panel-h .right{margin-left:auto;flex:none}
+.fields{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;align-items:start}
+.fields.two{grid-template-columns:1fr 1fr}
+@media(max-width:760px){ .fields,.fields.two{grid-template-columns:1fr;gap:14px} }
+.flabel{display:block;font-size:14px;font-weight:800;color:var(--ink2);text-transform:none;letter-spacing:-.01em;margin:0 0 9px}
+.slider{width:100%;accent-color:var(--teal);height:22px;cursor:pointer}
+.sval{font-size:14.5px;font-weight:800;color:var(--muted);margin-top:2px}
+.jarcards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:22px}
+@media(max-width:560px){ .jarcards{grid-template-columns:1fr} }
+.jarc{border:1px solid var(--line);border-radius:14px;padding:18px;background:var(--bg2)}
+.jarc i{display:grid;place-items:center;width:46px;height:46px;border-radius:12px;font-style:normal;
+  font-size:22px;font-weight:800;margin-bottom:16px}
+.jarc.save i{background:color-mix(in srgb,var(--good) 14%,var(--panel));color:var(--good)}
+.jarc.spend i{background:color-mix(in srgb,var(--coral) 14%,var(--panel));color:var(--coral)}
+.jarc.share i{background:color-mix(in srgb,#8b5cf6 14%,var(--panel));color:#8b5cf6}
+.jarc b{display:block;font-size:28px;font-weight:800;letter-spacing:-.04em;line-height:1}
+.jarc small{display:block;color:var(--muted);font-size:13.5px;font-weight:600;margin-top:7px}
+select.in{appearance:none;background-image:url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2361726f' stroke-width='3' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 13px center;background-size:15px;padding-right:38px}
+
+/* ---------------- rows / lists ---------------- */
+.tx{display:flex;align-items:center;gap:13px;padding:13px 0;border-bottom:1px solid var(--line2)}
+.tx:last-child{border-bottom:0}
+.tx .ic{width:42px;height:42px;border-radius:11px;display:grid;place-items:center;font-size:19px;flex:none;background:var(--bg2)}
+.tx .t{flex:1;min-width:0}
+.tx .t b{display:block;font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:-.015em}
+.tx .t small{color:var(--muted);font-size:12.5px;font-weight:600}
+.tx .v{font-weight:800;font-size:16px;white-space:nowrap;letter-spacing:-.02em}
+.v.plus{color:var(--good)} .v.minus{color:var(--ink)}
+.tx .del{color:var(--muted);font-size:15px;padding:6px;opacity:.5}
+.tx .del:hover{opacity:1;color:var(--bad)}
+
+.bar-t{height:9px;border-radius:99px;background:var(--line2);overflow:hidden;margin-top:9px}
+.bar-t i{display:block;height:100%;border-radius:99px;transition:width .5s ease}
+.row{display:flex;justify-content:space-between;align-items:baseline;font-size:14.5px;font-weight:700;gap:10px;letter-spacing:-.015em}
+.row small{color:var(--muted);font-weight:600;font-size:12.5px;letter-spacing:0}
+.blk{margin-bottom:20px}.blk:last-child{margin-bottom:0}
+.legend{display:flex;flex-wrap:wrap;gap:8px 16px;margin-top:14px}
+.legend div{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:700}
+.dot{width:10px;height:10px;border-radius:3px;flex:none}
+
+.callout{background:var(--teal-l);border-left:3px solid var(--teal);border-radius:0 11px 11px 0;
+  padding:14px 17px;font-size:14.5px;line-height:1.6;font-weight:500}
+.callout.warn{background:var(--coral-l);border-color:var(--coral)}
+.callout + .callout{margin-top:11px}
+
+/* ---------------- goals ---------------- */
+.goal{border:1px solid var(--line);border-radius:14px;padding:18px}
+.goal .gh{display:flex;align-items:center;gap:13px}
+.goal .ge{font-size:30px}
+.goal .gn{font-weight:800;font-size:16.5px;letter-spacing:-.025em}
+.goal .gs{font-size:13px;color:var(--muted);font-weight:600}
+.gbtns{display:flex;gap:9px;margin-top:15px;flex-wrap:wrap}
+
+/* ---------------- learn ---------------- */
+.lesson{display:flex;align-items:center;gap:15px;padding:17px;border-radius:14px;border:1px solid var(--line);
+  width:100%;text-align:left;margin-bottom:11px;background:var(--panel);transition:.15s}
+.lesson:hover{border-color:var(--teal);transform:translateY(-1px)}
+.lesson.done{background:var(--teal-l);border-color:transparent}
+.lesson .le{font-size:28px;flex:none}
+.lesson b{display:block;font-size:15.5px;font-weight:800;letter-spacing:-.025em}
+.lesson small{color:var(--muted);font-size:13px;font-weight:600}
+.lesson .chk{margin-left:auto;font-size:17px;color:var(--teal);font-weight:800}
+.badges{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:16px}
+.badge{text-align:center;font-size:11.5px;font-weight:700;color:var(--muted)}
+.badge i{display:grid;place-items:center;width:54px;height:54px;border-radius:50%;font-size:25px;margin:0 auto 7px;
+  background:var(--bg2);filter:grayscale(1);opacity:.4;font-style:normal;border:1px solid var(--line)}
+.badge.on i{background:linear-gradient(160deg,#f9dd6e,#eeb61d);filter:none;opacity:1;border-color:transparent}
+.badge.on{color:var(--ink)}
+.prose{font-size:15.5px;line-height:1.72;font-weight:500}
+.prose p{margin:0 0 14px}
+.prose b{font-weight:800}
+.qz{margin-bottom:20px}
+.qz .q{font-weight:800;font-size:15.5px;margin-bottom:11px;letter-spacing:-.02em}
+.opt{display:block;width:100%;text-align:left;padding:14px 16px;border-radius:11px;background:var(--panel);
+  border:1px solid var(--line);margin-bottom:9px;font-size:14.5px;font-weight:600}
+.opt:hover{border-color:var(--teal)}
+.opt.ok{border-color:var(--good);background:color-mix(in srgb,var(--good) 9%,transparent);font-weight:800}
+.opt.no{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 8%,transparent)}
+
+/* ---------------- modal ---------------- */
+.sheet{position:fixed;inset:0;background:rgba(14,25,23,.5);display:none;z-index:60;
+  align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px)}
+.sheet.on{display:flex}
+.sheetin{background:var(--panel);width:100%;max-width:520px;border-radius:20px;padding:26px;
+  max-height:88vh;overflow:auto;box-shadow:var(--shadow-lg);animation:pop .18s ease}
+@keyframes pop{from{transform:translateY(14px) scale(.98);opacity:0}to{transform:none;opacity:1}}
+@media(max-width:640px){
+  .sheet{align-items:flex-end;padding:0}
+  .sheetin{border-radius:22px 22px 0 0;max-height:93vh;padding:22px 18px calc(24px + env(safe-area-inset-bottom))}
+}
+.sheeth{display:flex;align-items:center;gap:14px;margin-bottom:6px}
+.sheeth h2{font-size:23px;font-weight:800;letter-spacing:-.035em}
+.sheeth button{margin-left:auto;background:var(--bg2);width:36px;height:36px;border-radius:50%;font-size:16px;
+  color:var(--muted);flex:none}
+label{display:block;font-size:12px;font-weight:800;color:var(--muted);text-transform:uppercase;
+  letter-spacing:.09em;margin:20px 0 8px}
+.in{width:100%;padding:14px 15px;border-radius:11px;border:1px solid var(--line);background:var(--bg2);
+  color:var(--ink);font-weight:700;font-size:15px}
+.in:focus{outline:0;border-color:var(--teal);background:var(--panel)}
+.big{font-size:30px;font-weight:800;text-align:center;letter-spacing:-.03em;padding:16px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{padding:11px 14px;border-radius:10px;background:var(--panel);border:1px solid var(--line);
+  font-size:14px;font-weight:700;color:var(--ink)}
+.chip:hover{border-color:var(--muted)}
+.chip.on{background:var(--teal);border-color:var(--teal);color:#fff}
+.pad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:18px}
+.pad button{padding:17px;border-radius:11px;background:var(--bg2);border:1px solid var(--line);
+  font-size:20px;font-weight:700}
+.pad button:hover{border-color:var(--teal)}
+.pins{display:flex;gap:14px;justify-content:center;margin:22px 0 4px}
+.pins i{width:14px;height:14px;border-radius:50%;background:var(--line);transition:.15s}
+.pins i.f{background:var(--teal);transform:scale(1.15)}
+
+.pop{position:fixed;left:50%;bottom:28px;transform:translate(-50%,14px);background:var(--ink);color:var(--bg);
+  padding:13px 22px;border-radius:11px;font-size:14.5px;font-weight:700;z-index:99;opacity:0;
+  transition:.22s;pointer-events:none;max-width:90vw;text-align:center;box-shadow:var(--shadow-lg)}
+.pop.on{opacity:1;transform:translate(-50%,0)}
+.hide{display:none!important}
+footer{border-top:1px solid var(--line);padding:26px 0 34px;color:var(--muted);font-size:13.5px;font-weight:600}
+
+/* ---------------- small screens / watch ---------------- */
+@media(max-width:520px){
+  .bar .in{height:62px;gap:14px}
+  .tabs{position:fixed;left:0;right:0;bottom:0;background:var(--panel);border-top:1px solid var(--line);
+    padding:7px 8px calc(7px + env(safe-area-inset-bottom));justify-content:space-around;z-index:45}
+  .tabs a{font-size:11px;font-weight:800;padding:7px 9px;text-align:center}
+  body{padding-bottom:70px}
+  .sec-h h2{font-size:24px}
+  .stat b{font-size:28px}
+  .card{padding:18px}
+}
+@media(max-width:330px){
+  .wrap{padding:0 10px}
+  .art{display:none}
+  .hero{padding:20px 0 14px}
+  .hero h1{font-size:31px}
+  .hero p.lede{font-size:14.5px;margin:12px 0 16px}
+  .logo span{display:none}
+  .card{padding:13px;border-radius:12px}
+  .stat{padding:13px}.stat b{font-size:23px}
+  .tabs a{font-size:0;padding:8px 6px}
+  .tabs a:before{content:attr(data-e);font-size:19px}
+  .btn{padding:11px 14px;font-size:13.5px}
+  footer{display:none}
+}
+</style>
+</head>
+<body>
+
+<header class="bar"><div class="wrap in">
+  <a class="logo" href="#dashboard"><i>💰</i><span>Smart Money Bro</span></a>
+  <nav class="tabs" id="tabs"></nav>
+  <div class="act" id="act"></div>
+</div></header>
+
+<main class="wrap" id="view"></main>
+
+<footer class="wrap" id="foot"></footer>
+
+<div class="sheet" id="sheet"><div class="sheetin" id="sheetin"></div></div>
+<div class="pop" id="pop"></div>
+
+<script>
+/* =====================================================================
+   SMART MONEY BRO  -  single-file kid money app
+   Data lives in localStorage on the device. No server needed.
+   ===================================================================== */
+const KEY = 'smartmoneybro.v1';
+const $ = s => document.querySelector(s);
+
+/* ---------------------------------------------------------------------------
+   OPTIONAL BACKEND — paste your Google Apps Script web app URL between the
+   quotes to collect data from testers. See google-sheet-backend.gs for setup.
+   Left empty, the app has no backend at all and nothing is ever sent anywhere.
+   --------------------------------------------------------------------------- */
+const SYNC_URL = 'https://script.google.com/macros/s/AKfycbz75e-pkYFuU0TGbtKQL-Rlk6WzSWNbNruKamCg0AooutJ1E05ILBS5fm26oIBGx5sv5g/exec';
+const SYNC_OWNER = 'Hawk';   // appears in the consent text your testers see
+
+/* ---------------- categories ---------------- */
+const OUT_CATS = [
+  {id:'snacks', n:'Snacks & Food', e:'🍕', c:'var(--c3)'},
+  {id:'games',  n:'Games & Apps',  e:'🎮', c:'var(--c1)'},
+  {id:'toys',   n:'Toys & Stuff',  e:'🧸', c:'var(--c2)'},
+  {id:'books',  n:'Books & School',e:'📚', c:'var(--c5)'},
+  {id:'clothes',n:'Clothes',       e:'👕', c:'var(--c6)'},
+  {id:'fun',    n:'Fun & Outings', e:'🎡', c:'var(--c8)'},
+  {id:'gifts',  n:'Gifts',         e:'🎁', c:'var(--c7)'},
+  {id:'travel', n:'Travel',        e:'🚌', c:'var(--c9)'},
+  {id:'save',   n:'Into Savings',  e:'🏦', c:'var(--c4)'},
+  {id:'other',  n:'Other',         e:'✨', c:'var(--c9)'}
+];
+const IN_CATS = [
+  {id:'pocket', n:'Pocket Money', e:'💰'},
+  {id:'chores', n:'Chores',       e:'🧹'},
+  {id:'gift',   n:'Gift',         e:'🎁'},
+  {id:'work',   n:'Part-time Work',e:'💼'},
+  {id:'sell',   n:'Sold Something',e:'🏷️'},
+  {id:'bonus',  n:'Other',        e:'⭐'}
+];
+const cat = id => OUT_CATS.find(c=>c.id===id) || IN_CATS.find(c=>c.id===id) || {n:'Other',e:'✨',c:'var(--c9)'};
+const CURRENCIES = ['₹','$','£','€','¥','A$','R'];
+const AVATARS = ['🐷','🦊','🐼','🐵','🐯','🐨','🐸','🦁','🚀','⭐'];
+
+/* ---------------- lessons ---------------- */
+const LESSONS = {
+ junior:[
+  {id:'j1',e:'🪙',t:'What is money, really?',s:'2 min · the basics',
+   body:`<p>Money is just a <b>swap tool</b>. Long ago people traded a goat for grain. That was hard — what if the grain seller did not want a goat? So people invented money: something everyone agrees is worth something.</p>
+   <p>When you spend money you are really swapping it for something you want. That means every rupee, dollar or pound you hand over is a <b>choice</b>.</p>
+   <div class="callout">💡 Before you buy, ask: "Is this thing worth more to me than the money?" Sometimes yes. Sometimes no. Both answers are fine — the point is to actually ask.</div>
+   <p style="margin-top:14px">Money also does not appear by magic. It comes from someone's <b>work</b> or <b>time</b>. Your pocket money comes from work your parents did. Knowing that makes it feel more valuable.</p>`,
+   quiz:[{q:'Why did people invent money?',o:['To make trading easier','To make shops look nice','Because goats got tired'],a:0},
+         {q:'Every time you spend, you are making a…',o:['Mistake','Choice','Promise'],a:1}]},
+  {id:'j2',e:'⚖️',t:'Needs vs Wants',s:'2 min · super important',
+   body:`<p>A <b>need</b> is something you must have: food, school books, a warm coat in winter, bus fare to get home.</p>
+   <p>A <b>want</b> is something that is nice to have: a new game skin, sweets, the third pair of sneakers.</p>
+   <p>Wants are not bad! A life with zero wants is boring. The trick is <b>order</b>: needs first, then savings, then wants with what is left.</p>
+   <div class="callout">💡 The 24-hour rule: when you really want something, wait one day. If you still want it tomorrow, it is probably a real want. About half the time, you will forget it completely.</div>`,
+   quiz:[{q:'Which one is a NEED?',o:['A new game skin','Lunch at school','A friendship bracelet'],a:1},
+         {q:'What is the 24-hour rule?',o:['Spend within 24 hours','Wait a day before buying','Save for 24 days'],a:1}]},
+  {id:'j3',e:'🐷',t:'Why saving beats spending it all',s:'3 min · the magic jar',
+   body:`<p>Imagine you get 100 in pocket money each month. If you spend all 100, at the end of the year you have… 0.</p>
+   <p>If you save just 20 each month, by December you have <b>240</b>. That is enough for something big you could never buy in one month.</p>
+   <p>This is the superpower of saving: it turns small boring amounts into <b>big exciting ones</b>. You are not losing the money. You are moving it to future-you.</p>
+   <div class="callout">💡 Try the 3-jar plan: SPEND (half), SAVE (a bit less than half), SHARE (a small slice for gifts or helping someone).</div>`,
+   quiz:[{q:'You save 20 a month. After 12 months you have…',o:['120','240','20'],a:1},
+         {q:'Saving money means…',o:['Losing it','Moving it to future you','Giving it away'],a:1}]},
+  {id:'j4',e:'🕵️',t:'Be a deal detective',s:'3 min · spot the cheaper option',
+   body:`<p>Shops are not trying to be fair. They are trying to make it <b>easy</b> for you to spend. A deal detective slows down for ten seconds and finds the cheaper option.</p>
+   <p><b>Clue 1: where you are standing.</b> A convenience store like 7-Eleven charges more than a supermarket like FairPrice or Sheng Siong for the exact same snack or drink. You are paying for convenience, not for the product.</p>
+   <p><b>Clue 2: the tiny print on the shelf.</b> Supermarket labels show price per 100g or per litre. That is the number that tells you which pack is really cheaper.</p>
+   <p><b>Clue 3: the word "free".</b> 1-for-1 and buy-one-get-one only save money if you genuinely wanted two. Otherwise you just spent money to get something you did not need.</p>
+   <div class="callout">🕵️ Detective challenge: this week, find one thing you buy often and check its price in two different shops. Write down the gap. Most kids are shocked.</div>
+   <p style="margin-top:14px">Deals move around all the time, so the skill is not memorising prices — it is <b>checking before you pay</b>. Look at the shop's app or member card offers first.</p>`,
+   quiz:[{q:'The same drink is usually cheapest at…',o:['A convenience store','A supermarket','The school canteen vending machine'],a:1},
+         {q:'1-for-1 is a good deal when…',o:['You wanted two anyway','It is on the poster','You are already at the shop'],a:0}]}
+ ],
+ mid:[
+  {id:'m1',e:'📊',t:'How to build a budget',s:'3 min · your money plan',
+   body:`<p>A budget sounds like a rule book. It is not. It is a <b>plan you make for yourself</b> so your money does not vanish mysteriously.</p>
+   <p>Three steps:</p>
+   <p><b>1. Add up what comes in.</b> Pocket money + chores + any work + gifts.<br>
+   <b>2. Decide savings first.</b> Take that off the top before you plan any spending. This is called "paying yourself first".<br>
+   <b>3. Split the rest into categories.</b> Snacks, games, outings. Give each one a limit.</p>
+   <div class="callout">💡 A popular starting split is 50 / 30 / 20 — half for regular spending, 30% for saving toward a goal, 20% for fun and giving. Adjust it to fit your life.</div>
+   <p style="margin-top:14px">A budget is not a failure if you go over. It is <b>information</b>. If snacks blow the limit three months running, your snack limit was probably too low — fix the plan, not just the behaviour.</p>`,
+   quiz:[{q:'"Pay yourself first" means…',o:['Buy yourself a treat first','Set savings aside before spending','Charge your friends'],a:1},
+         {q:'You went over budget. That means…',o:['You failed','It is useful information','You should stop budgeting'],a:1}]},
+  {id:'m2',e:'🏦',t:'How a bank account works',s:'3 min · banking basics',
+   body:`<p>A bank keeps your money safe and gives you a <b>record</b> of everything that goes in and out. That record is worth a lot — you can see exactly where your money went.</p>
+   <p><b>Savings account:</b> money sits, grows a little with interest, harder to spend on impulse. Great for goals.<br>
+   <b>Current / checking account:</b> for money you actually spend. Comes with a card.<br>
+   <b>Debit card:</b> spends money you already have.<br>
+   <b>Credit card:</b> spends the bank's money — you must pay it back, and it costs extra if you are late.</p>
+   <div class="callout warn">🔒 Never share your PIN, card number or one-time passcode. A real bank will <b>never</b> phone or message you asking for them. That is always a scam.</div>
+   <p style="margin-top:14px">Banks also make money. They lend out what you deposit and charge interest. That is why they pay you a little to keep your money there.</p>`,
+   quiz:[{q:'A debit card spends…',o:["The bank's money","Money you already have","Your parents' money"],a:1},
+         {q:'A bank calls asking for your PIN. You should…',o:['Give it, they are the bank','Refuse — banks never ask','Give half of it'],a:1}]},
+  {id:'m3',e:'🎯',t:'Making pocket money last longer',s:'3 min · practical tricks',
+   body:`<p>Most pocket money disappears in the <b>first week</b>. Here is why, and how to stop it.</p>
+   <p><b>Split it by week.</b> Getting 400 a month feels rich. Getting 100 a week feels realistic. Same money, much better decisions.</p>
+   <p><b>Track every single spend.</b> Even the small ones. Especially the small ones — 20 on snacks five times a week is 400 a month, which is probably your entire allowance.</p>
+   <p><b>Find your leak.</b> Look at your spending chart after one month. Almost everyone has one category that is way bigger than they guessed. That is your leak. Cut it by a third — not to zero, that never lasts.</p>
+   <div class="callout">💡 Cash test: if you would not hand over the same amount in physical notes, do not tap the card either. Digital money spends too easily.</div>`,
+   quiz:[{q:'Why split monthly money into weeks?',o:['Banks require it','Smaller amounts lead to better decisions','It earns more interest'],a:1},
+         {q:'Your biggest "leak" is usually…',o:['One big purchase','Lots of small repeated spends','Gifts'],a:1}]},
+  {id:'m4',e:'🇸🇬',t:'Your first bank account in Singapore',s:'5 min · accounts and cards by age',
+   body:`<p>At some point keeping cash in a drawer stops making sense. Here is roughly how it works in Singapore — the details below were checked in August 2026, but banks change their terms, so always confirm on the bank's own website before deciding anything.</p>
+   <p><b>Under 16 — a parent opens it with you.</b> Banks will not let someone under 16 open an account alone. It is opened by a parent or legal guardian, either as a joint or trust account, or in your name but set up through their app.</p>
+   <p>Options families commonly look at:</p>
+   <p>🐷 <b>POSB Smart Buddy</b> — built for ages 7 to 16, with a contactless watch or card and a parent app that shows what you spent.<br>
+   💳 <b>OCBC MyOwn</b> — launched in late 2024 for ages 7 to 15. The account is in <i>your</i> name with your own debit card and app, but your parent opens it and sets the spending limits.<br>
+   🏦 <b>POSB My Account (Kids)</b>, <b>UOB Junior Savers</b>, <b>CIMB Junior Saver</b> — straightforward children's savings accounts opened by a parent.</p>
+   <p><b>At 12</b> you become eligible to apply for a DBS/POSB ATM card at a branch — your first card that is genuinely yours.</p>
+   <p><b>At 16</b> things open up: DBS/POSB digital banking access, a Visa Debit card, and the ability to apply for an account as the sole holder at most banks.</p>
+   <div class="callout warn">🔒 Whatever card you end up with: your PIN and any one-time password belong to you alone. No bank, teacher, friend or "customer service officer" will ever need them. Anyone who asks is stealing from you.</div>
+   <p style="margin-top:14px">What to actually ask when comparing: is there a minimum balance? Any fall-below fee? What interest does it really pay? Can my parents see the transactions — and am I fine with that? (Usually you should be. It is their money that funded it.)</p>`,
+   quiz:[{q:'Can a 13-year-old open a bank account alone in Singapore?',o:['Yes, at any branch','No — a parent or guardian opens it with you','Only online'],a:1},
+         {q:'At what age can you apply for a DBS/POSB ATM card?',o:['7','12','18'],a:1},
+         {q:'Someone calls saying they are from your bank and need your OTP. You…',o:['Give it, they are the bank','Never give it — no bank asks','Give it if they know your name'],a:1}]}
+ ],
+ senior:[
+  {id:'s1',e:'📈',t:'Compound interest: money that grows itself',s:'4 min · the eighth wonder',
+   body:`<p>Simple interest pays you on your original amount. <b>Compound interest</b> pays you on your original amount <i>plus all the interest you already earned</i>. That second part is where the magic hides.</p>
+   <p>Save 1,000 at 8% a year:<br>
+   Year 1 → 1,080. Year 5 → 1,469. Year 10 → 2,159. Year 30 → <b>10,062</b>.</p>
+   <p>You put in 1,000. Time did the rest. Notice the curve barely moves early on and then goes vertical — which is exactly why starting young beats saving more later.</p>
+   <div class="callout">💡 Rule of 72: divide 72 by the interest rate to get the years it takes your money to double. At 8%, that is 9 years. At 3%, 24 years.</div>
+   <p style="margin-top:14px">Warning: compounding works against you too. Credit card debt at 36% a year doubles in <b>two years</b> if you ignore it.</p>`,
+   quiz:[{q:'At 6% interest, roughly how long to double your money?',o:['6 years','12 years','36 years'],a:1},
+         {q:'Compounding is dangerous when…',o:['You are saving','You are in debt','Rates are low'],a:1}]},
+  {id:'s2',e:'🛡️',t:'Scams, ads and money traps',s:'4 min · protect yourself',
+   body:`<p>People will try to separate you from your money. Some are obvious. Most are not.</p>
+   <p><b>Urgency</b> is the number one red flag. "Only 2 left!", "Offer ends in 5 minutes", "Send now or your account closes." Real opportunities survive you thinking overnight.</p>
+   <p><b>Guaranteed returns</b> do not exist. Anyone promising to double your money in a week is either lying or committing a crime. Investment always carries risk — that is the whole deal.</p>
+   <p><b>In-game spending</b> is engineered. Buying "gems" instead of currency hides the real cost. Convert it back: 800 gems for 500 is 500 of your actual money, gone.</p>
+   <div class="callout warn">🛑 Three questions before any online payment: Who exactly gets this money? What happens if it goes wrong? Would I still do this tomorrow?</div>
+   <p style="margin-top:14px">Never send money to someone you have only met online, no matter how well you think you know them.</p>`,
+   quiz:[{q:'Biggest red flag in a money offer?',o:['A discount','Extreme urgency','A long description'],a:1},
+         {q:'"Guaranteed 100% returns in a week" is…',o:['A great deal','A scam','Normal investing'],a:1}]},
+  {id:'s3',e:'💼',t:'Earning your own money',s:'4 min · from allowance to income',
+   body:`<p>At some point pocket money stops being enough. Earning changes your relationship with money permanently — you stop counting in rupees or dollars and start counting in <b>hours of your life</b>.</p>
+   <p>Ways teens actually earn: tutoring younger students, dog walking, small design or video edits, reselling things you fixed up, helping a local business with social media, weekend shifts where legal.</p>
+   <p><b>Work out your real hourly rate.</b> If a job pays 600 for 4 hours plus 1 hour travelling, that is 120/hour, not 150. Then judge purchases against it: a 1,200 pair of headphones costs you 10 hours.</p>
+   <div class="callout">💡 Keep records from day one — what you earned, when, and from whom. It builds the habit you will need for taxes and it is proof of experience for your first real job.</div>
+   <p style="margin-top:14px">Check your country's rules on minimum working age and hours before taking paid work, and always tell a parent where you are working.</p>`,
+   quiz:[{q:'A job pays 600 for 4 hours work + 1 hour travel. Real rate?',o:['150/hour','120/hour','600/hour'],a:1},
+         {q:'The best mental trick for big purchases is to price them in…',o:['Hours of your time','Percentages','Weeks'],a:0}]}
+ ]
+};
+/* ---------------- money hacks: short, fun, age-tiered (Singapore) ---------------- */
+const TIPS = {
+ junior:[
+  {e:'🥤',t:'Same drink, two prices',w:'A drink at a convenience store like 7-Eleven usually costs more than the same one at FairPrice, Sheng Siong or Giant. Same taste, same brand — you just paid extra for being in a hurry.'},
+  {e:'🚰',t:'A water bottle is a money machine',w:'Refills at school and water coolers are free. Buying one drink a day is small. Buying one drink a day for a whole month is most of a video game.'},
+  {e:'📱',t:'Check the app before you queue',w:'Loads of food chains and bakeries push deals through their own app or a member card. Thirty seconds of checking can knock a chunk off the price you were about to pay.'},
+  {e:'👯',t:'1-for-1 only saves money if you wanted two',w:'Buy-one-get-one-free is a great deal when you split it with a friend and each pay half. It is a terrible deal when it makes you buy something you were not going to buy at all.'},
+  {e:'🍜',t:'Hawker, food court, café — same lunch, wildly different price',w:'The exact same plate of chicken rice can cost double depending on where you sit down. Notice the gap and you can eat out more often, not less.'},
+  {e:'⚖️',t:'Look at the tiny price on the shelf label',w:'Supermarket labels show the price per 100g or per litre in small print. The bigger pack is usually cheaper per gram — but only worth it if you will actually finish it.'},
+  {e:'⏳',t:'The hype test',w:'If you only want it because there is a queue or everyone at school has one, wait one day. Real wants survive a night of sleep. Hype does not.'},
+  {e:'🚌',t:'Check your card before you tap',w:'Getting stuck at the gantry with a low EZ-Link or bank card balance costs you time and sometimes an awkward phone call. Check it on Sunday, travel easy all week.'}
+ ],
+ mid:[
+  {e:'🏦',t:'Your money can earn money while you sleep',w:'Cash in a drawer earns nothing. The same cash in a savings account earns interest — small, but free. Ask your parents to check what rate your account actually pays.'},
+  {e:'🔁',t:'Subscriptions are the silent killer',w:'A few dollars a month for music, games and cloud storage feels invisible. List them all, multiply by twelve, and see what the yearly number looks like.'},
+  {e:'📲',t:'PayNow and QR: check who you are paying',w:'Before confirming, read the name that pops up. If it does not match the shop or the person you expect, stop. Scammers rely on you tapping too fast.'},
+  {e:'💳',t:'Debit spends yours, credit spends theirs',w:'A debit card takes money you already have. A credit card lends it to you and charges you if you are late. At your age you will be offered debit — that is the safer one anyway.'},
+  {e:'🎮',t:'Convert gems back into real money',w:'Games price things in gems, coins and V-bucks so the real cost blurs. Do the maths back into dollars before buying. It is often more than you thought.'},
+  {e:'📊',t:'Track for one month before you judge yourself',w:'You cannot fix a spending habit you cannot see. One month of honest logging tells you more than any lecture from an adult.'},
+  {e:'🧾',t:'Keep the receipt for anything expensive',w:'No receipt often means no exchange and no warranty claim. Snap a photo of it — that is usually enough.'},
+  {e:'🎯',t:'Name your savings',w:'"Savings" is easy to raid. "Concert in December" is much harder to raid, because spending it means cancelling something you actually want.'}
+ ],
+ senior:[
+  {e:'📈',t:'Compare the interest rate, not the poster',w:'Banks advertise the maximum rate you could get if you meet every condition. Find the base rate — that is what you will actually earn.'},
+  {e:'⏰',t:'Time beats amount',w:'Someone saving a small amount from 16 usually ends up ahead of someone saving a big amount from 30. You currently have the one thing money cannot buy back.'},
+  {e:'💼',t:'Price things in hours worked',w:'Once you earn, divide the price by your hourly rate. A $120 item is not $120 — it is however many hours of your weekend it took.'},
+  {e:'🛑',t:'Urgency is the scam signal',w:'"Act now", "limited slots", "send the OTP to verify". Real institutions never rush you and never ask for a one-time password.'},
+  {e:'📉',t:'Nobody guarantees a return',w:'If a friend, a stranger, or an ad promises certain profit, the risk has not disappeared — it has just been hidden from you.'},
+  {e:'🧮',t:'Learn the rule of 72',w:'Divide 72 by the interest rate and you get the years for money to double. It works for debt too, which is exactly why credit card debt gets dangerous fast.'},
+  {e:'🤝',t:'Lending to friends costs friendships',w:'If you would not be fine never seeing that money again, do not lend it. Say so kindly and early.'},
+  {e:'🗂️',t:'Start a money record now',w:'What you earned, from whom, and when. It makes your first tax form boring instead of terrifying, and it proves your work experience.'}
+ ]
+};
+
+const BADGES = [
+  {id:'first',   e:'🎉', n:'First Log'},
+  {id:'saver',   e:'🐷', n:'Saver'},
+  {id:'goal',    e:'🏆', n:'Goal Hit'},
+  {id:'budget',  e:'📊', n:'Budgeter'},
+  {id:'scholar', e:'🎓', n:'Scholar'},
+  {id:'streak',  e:'🔥', n:'7 Days'},
+  {id:'hacks',   e:'🃏', n:'Hack Hunter'}
+];
+const BADGE_HINT = {
+  first:'Log your first entry', saver:'Keep 20% of your money in a month',
+  goal:'Finish a savings goal', budget:'Set a budget and use it',
+  scholar:'Finish every lesson', streak:'Log something 7 days in a row',
+  hacks:'Collect every money hack'
+};
+
+/* ---------------- state ---------------- */
+const blank = () => ({
+  profile:null, tx:[], budget:{}, goals:[],
+  done:[], badges:[], allowance:{amount:0, freq:'month'}, lastDays:[],
+  jars:{ base:null, savePct:30, sharePct:10 },  // base null = use this month's actual income
+  match:{ on:false, pct:20, cap:0, paid:[] },   // parent savings match: % of what the kid keeps
+  hacks:{},                                      // collected money hacks, per age tier
+  share:{ on:false, asked:false, nick:'', id:null, last:null, err:null }
+});
+let S = blank();
+let tab = 'dashboard', parentUnlocked = false, pinBuf = '', pinMode = null;
+const TABS = [['dashboard','Dashboard','🏠'],['money','Money','💸'],['budget','Budget','📊'],
+              ['goals','Goals','🎯'],['learn','Money lessons','🎓'],['parent','Parents','🔒']];
+
+function load(){ try{ const r = localStorage.getItem(KEY); if(r) S = Object.assign(blank(), JSON.parse(r)); }catch(e){ console.warn('load failed', e); } }
+function persist(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){ toast('Could not save — storage is full or blocked'); } }
+function save(){ persist(); maybeSync(); }
+
+/* ---------------- helpers ---------------- */
+const cur = () => (S.profile && S.profile.currency) || '₹';
+const money = n => cur() + Math.abs(Math.round(n*100)/100).toLocaleString(undefined,{maximumFractionDigits:2});
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2,7);
+const ym  = d => d.slice(0,7);
+/* Local calendar date. toISOString() is UTC, which in Singapore (+8) hands back
+   yesterday's date all morning — that would misfile entries and break streaks. */
+const ymd = dt => { const p = n => String(n).padStart(2,'0');
+  return dt.getFullYear() + '-' + p(dt.getMonth()+1) + '-' + p(dt.getDate()); };
+const today = () => ymd(new Date());
+const thisMonth = () => today().slice(0,7);
+const esc = s => String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+
+const balance   = () => S.tx.reduce((t,x)=> t + (x.type==='in' ? x.amt : -x.amt), 0);
+const monthIn   = (m=thisMonth()) => S.tx.filter(x=>x.type==='in'  && ym(x.date)===m).reduce((t,x)=>t+x.amt,0);
+const monthOut  = (m=thisMonth()) => S.tx.filter(x=>x.type==='out' && ym(x.date)===m).reduce((t,x)=>t+x.amt,0);
+const spentIn   = (c,m=thisMonth()) => S.tx.filter(x=>x.type==='out' && x.cat===c && ym(x.date)===m).reduce((t,x)=>t+x.amt,0);
+function byCat(m=thisMonth()){
+  const o = {};
+  S.tx.filter(x=>x.type==='out' && ym(x.date)===m).forEach(x=> o[x.cat] = (o[x.cat]||0) + x.amt);
+  return Object.entries(o).sort((a,b)=>b[1]-a[1]);
+}
+const tier = () => { const a = (S.profile&&S.profile.age)||12; return a<=12?'junior' : a<=15?'mid' : 'senior'; };
+
+/* ---- jars: split every unit of money before it gets spent ---- */
+const jarBase = () => (S.jars.base != null ? S.jars.base : monthIn());
+function jars(){
+  const b = jarBase();
+  const sv = b * S.jars.savePct/100, sh = b * S.jars.sharePct/100;
+  return { base:b, save:sv, share:sh, spend:Math.max(0, b - sv - sh) };
+}
+/* everyday spending only — money moved into a savings goal is not "spending" */
+const spendUsed = () => S.tx.filter(x=>x.type==='out' && ym(x.date)===thisMonth() && x.cat!=='save')
+                           .reduce((t,x)=>t+x.amt,0);
+const leftToSpend = () => Math.max(0, jars().spend - spendUsed());
+/* money set aside: goal balances if there are goals, otherwise anything logged to savings */
+const savedTotal  = () => S.goals.length
+  ? S.goals.reduce((t,g)=>t+g.saved,0)
+  : S.tx.filter(x=>x.type==='out' && x.cat==='save').reduce((t,x)=>t+x.amt,0);
+const allLessons = () => LESSONS[tier()];
+
+function toast(msg){ const p=$('#pop'); p.textContent=msg; p.classList.add('on'); clearTimeout(p._t); p._t=setTimeout(()=>p.classList.remove('on'),2400); }
+function award(id){
+  if(S.badges.includes(id)) return;
+  S.badges.push(id); save();
+  const b = BADGES.find(x=>x.id===id);
+  if(b){ confetti(70); setTimeout(()=>toast('🏅 Badge unlocked: ' + b.n + '!'), 600); }
+}
+function touchStreak(){
+  const d = today();
+  if(!S.lastDays.includes(d)) S.lastDays.push(d);
+  S.lastDays = S.lastDays.slice(-60);
+  if(streak() >= 7) award('streak');
+}
+function streak(){
+  let n = 0, d = new Date();
+  for(;;){ const k = ymd(d); if(S.lastDays.includes(k)){ n++; d.setDate(d.getDate()-1); } else break; }
+  return n;
+}
+
+/* =====================================================================
+   REWARDS: cheer engine, confetti, parent savings match
+   ===================================================================== */
+const nm = () => (S.profile && S.profile.name) || 'friend';
+
+/* money kept this month, and the same figure for the last 7 days */
+const keptMonth = () => monthIn() - monthOut();
+function keptWeek(){
+  const d = new Date(); d.setDate(d.getDate()-6);
+  const from = ymd(d);
+  const inn = S.tx.filter(x=>x.type==='in'  && x.date>=from).reduce((t,x)=>t+x.amt,0);
+  const out = S.tx.filter(x=>x.type==='out' && x.date>=from && x.cat!=='save').reduce((t,x)=>t+x.amt,0);
+  return inn - out;
+}
+const savingsRate = () => monthIn()>0 ? keptMonth()/monthIn() : 0;
+
+/* the parent match the kid has earned this month */
+function matchEarned(){
+  if(!S.match.on) return 0;
+  const base = Math.max(0, keptMonth());
+  let amt = base * S.match.pct/100;
+  if(S.match.cap > 0) amt = Math.min(amt, S.match.cap);
+  return Math.round(amt*100)/100;
+}
+const matchPaid = (m=thisMonth()) => S.match.paid.includes(m);
+
+/* one hype message, chosen by what is actually true right now */
+function cheer(){
+  const rate = savingsRate(), kept = keptMonth(), wk = keptWeek(), st = streak();
+  const goal = S.goals.find(g=>g.saved < g.target);
+  const gp = goal ? goal.saved/goal.target*100 : 0;
+  const earned = matchEarned();
+
+  if(!S.tx.length) return {e:'👋', tone:'calm',
+    b:`Hey ${nm()} — let's get started!`,
+    s:`Log the very first thing you get or spend and this whole page comes alive. It takes about five seconds.`};
+
+  if(goal && gp >= 90) return {e:'🏁', tone:'gold', k:Math.round(gp)+'%', kl:'THERE',
+    b:`So close, ${nm()}! ${Math.round(gp)}% of the way to ${goal.name}`,
+    s:`Only ${money(goal.target-goal.saved)} left. You can genuinely see the finish line from here.`};
+
+  if(rate >= 0.4) return {e:'👑', tone:'', k:Math.round(rate*100)+'%', kl:'SAVED',
+    b:`Whoa — you saved ${Math.round(rate*100)}% this month!`,
+    s:`That is ${money(kept)} kept, ${nm()}. Smart and rich. Most adults do not manage this. Keep it up!`};
+
+  if(rate >= 0.2) return {e:'🌟', tone:'', k:Math.round(rate*100)+'%', kl:'SAVED',
+    b:`You are awesome! ${Math.round(rate*100)}% of your money saved this month`,
+    s:`${money(kept)} kept out of ${money(monthIn())}. That is a proper savings habit forming. Get smarter, stronger, richer!`};
+
+  if(earned > 0 && !matchPaid()) return {e:'🎁', tone:'gold', k:money(earned), kl:'TOP-UP',
+    b:`Your top-up is at ${money(earned)}`,
+    s:`Every extra dollar you keep this month grows this number. Free money for doing the right thing, ${nm()}.`};
+
+  if(st >= 7) return {e:'🔥', tone:'', k:st, kl:'DAYS',
+    b:`${st} days in a row, ${nm()}!`,
+    s:`Tracking every day is the boring secret behind every person who is good with money. You are doing it.`};
+
+  if(wk > 0) return {e:'💪', tone:'calm', k:money(wk), kl:'THIS WEEK',
+    b:`Nice week — ${money(wk)} saved`,
+    s:`You are doing fine, ${nm()}. Keep it going and this becomes ${money(wk*4)} a month without trying any harder.`};
+
+  if(kept < 0) return {e:'🧭', tone:'calm',
+    b:`Tricky month — and that is OK`,
+    s:`You spent ${money(-kept)} more than came in. Everyone does this sometimes. Try the jars below: take savings off the top first, then spend what is left.`};
+
+  if(st >= 3) return {e:'⚡', tone:'calm', k:st, kl:'DAY STREAK',
+    b:`${st} day streak, ${nm()} — keep it alive`,
+    s:`Log one thing today and the streak survives. Small habit, big payoff.`};
+
+  return {e:'🚀', tone:'calm',
+    b:`Let's make this month count, ${nm()}`,
+    s:`Save something — anything — before you spend. Even a tiny amount kept is a win worth celebrating.`};
+}
+function cheerBanner(){
+  const c = cheer();
+  return `<div class="cheer ${c.tone}">
+    <div class="medal">${c.e}</div>
+    <span class="spark s1">✨</span><span class="spark s2">⭐</span>
+    <div class="bubble"><b>${esc(c.b)}</b><span>${esc(c.s)}</span></div>
+    ${c.k ? `<div class="stamp"><b>${esc(String(c.k))}</b><small>${esc(c.kl)}</small></div>` : ''}
+  </div>`;
+}
+
+/* confetti — pure CSS pieces, cleaned up after they land */
+function confetti(n){
+  try{
+    let host = document.getElementById('confetti');
+    if(!host){ host = document.createElement('div'); host.id='confetti'; document.body.appendChild(host); }
+    const cols = ['#ff5f6d','#ffc93c','#31c96a','#3ba7ff','#7c4dff','#ff45a0','#ff8f3c'];
+    for(let i=0;i<(n||70);i++){
+      const p = document.createElement('i');
+      p.style.left = Math.random()*100 + 'vw';
+      p.style.background = cols[i % cols.length];
+      p.style.animationDuration = (1.6 + Math.random()*1.4) + 's';
+      p.style.animationDelay = (Math.random()*0.45) + 's';
+      p.style.transform = 'rotate(' + Math.random()*360 + 'deg)';
+      host.appendChild(p);
+    }
+    setTimeout(()=>{ if(host) host.innerHTML=''; }, 3600);
+  }catch(e){}
+}
+
+/* =====================================================================
+   OPTIONAL SHARING — off unless SYNC_URL is set AND the child opts in
+   ===================================================================== */
+const syncOn = () => !!SYNC_URL && S.share && S.share.on;
+let syncTimer = null, syncing = false;
+
+function sharePayload(){
+  return {
+    v: 1,
+    id: S.share.id,
+    nickname: S.share.nick || '',
+    age: S.profile ? S.profile.age : null,
+    currency: cur(),
+    summary: {
+      balance: balance(), monthIn: monthIn(), monthOut: monthOut(),
+      kept: keptMonth(), savingsRate: savingsRate(),
+      goals: S.goals.length, badges: S.badges.length, streak: streak(),
+      lessonsDone: S.done.length,
+      hacksCollected: Object.values(S.hacks||{}).reduce((t,a)=>t+a.length,0)
+    },
+    /* every entry, minus anything tagged as sample data */
+    tx: S.tx.filter(x=>!x.demo).map(x=>({ date:x.date, type:x.type, amt:x.amt, cat:cat(x.cat).n, note:x.note||'' }))
+  };
+}
+function maybeSync(){
+  if(!syncOn() || syncing) return;
+  clearTimeout(syncTimer);
+  syncTimer = setTimeout(()=>sendShare(true), 2500);   // wait for them to stop typing
+}
+function sendShare(quiet){
+  if(!syncOn()) return Promise.resolve(false);
+  syncing = true;
+  return fetch(SYNC_URL, {
+    method:'POST',
+    /* text/plain keeps it a "simple request" so the browser skips the CORS preflight
+       that Apps Script cannot answer */
+    headers:{ 'Content-Type':'text/plain;charset=utf-8' },
+    body: JSON.stringify(sharePayload())
+  })
+  .then(r=>r.json())
+  .then(res=>{
+    if(!res || !res.ok) throw new Error((res && res.error) || 'the server said no');
+    S.share.last = new Date().toISOString(); S.share.err = null; persist();
+    if(!quiet){ toast('Sent — ' + res.entries + ' entries shared'); render(); }
+    return true;
+  })
+  .catch(e=>{
+    S.share.err = String(e.message || e); persist();
+    if(!quiet){ toast('Could not send: ' + S.share.err); render(); }
+    return false;
+  })
+  .finally(()=>{ syncing = false; });
+}
+function startSharing(){
+  const nick = ($('#sh_nick') && $('#sh_nick').value.trim()) || (S.profile ? S.profile.name : '');
+  if(!nick){ toast('Type a nickname first'); return; }
+  S.share.on = true; S.share.asked = true; S.share.nick = nick;
+  S.share.id = S.share.id || uid() + uid();
+  persist(); render();
+  sendShare(false);
+}
+function stopSharing(){
+  if(!confirm('Stop sharing? Nothing more will be sent. Anything already sent stays in the maker\'s spreadsheet — ask them to delete it if you want it gone.')) return;
+  S.share.on = false; persist(); render(); toast('Sharing stopped');
+}
+function declineSharing(){ S.share.asked = true; persist(); render(); }
+
+function shareCard(){
+  if(!SYNC_URL || S.share.on || S.share.asked) return '';
+  return `<div class="card" style="border-color:var(--grape);background:linear-gradient(140deg,var(--grape-l),var(--panel) 60%)">
+    <h3>🧪 Help test Smart Money Bro</h3>
+    <p class="note">${esc(SYNC_OWNER)} is building this app and would like to see how it works in real life.
+      If you say yes, your entries get sent to their private spreadsheet whenever you log something.</p>
+    <div class="callout" style="margin-top:14px"><b>What gets sent:</b> the nickname you choose, your age, and every
+      entry you log — including the little notes you type, like "pizza with Sam". <b>What never gets sent:</b> your real
+      name unless you type it as your nickname, your school, address, phone or email. You can stop any time in ⚙️ Settings.
+      <b>Ask a parent first.</b></div>
+    <label>Pick a nickname</label>
+    <input class="in" id="sh_nick" maxlength="20" placeholder="e.g. FastFox21" value="">
+    <div class="gbtns" style="margin-top:16px">
+      <button class="btn sm grape" onclick="startSharing()">Yes, share my data</button>
+      <button class="btn sm ghost" onclick="declineSharing()">No thanks</button>
+    </div>
+  </div>`;
+}
+
+/* ---------------- donut ---------------- */
+function donut(data, total, size){
+  size = size || 150;
+  if(!total) return '';
+  const R=52, C=2*Math.PI*R; let off=0;
+  const arcs = data.map(([c,v])=>{
+    const len = (v/total)*C, s = `<circle cx="60" cy="60" r="${R}" fill="none" stroke="${cat(c).c}" stroke-width="14"
+      stroke-dasharray="${len.toFixed(2)} ${(C-len).toFixed(2)}" stroke-dashoffset="${(-off).toFixed(2)}"
+      transform="rotate(-90 60 60)"></circle>`;
+    off += len; return s;
+  }).join('');
+  return `<svg viewBox="0 0 120 120" style="width:${size}px;height:${size}px;flex:none">
+    <circle cx="60" cy="60" r="52" fill="none" stroke="var(--line2)" stroke-width="14"></circle>${arcs}
+    <text x="60" y="55" text-anchor="middle" font-size="8.5" font-weight="800" fill="var(--muted)" letter-spacing=".8">SPENT</text>
+    <text x="60" y="72" text-anchor="middle" font-size="15" font-weight="800" fill="var(--ink)">${esc(money(total))}</text>
+  </svg>`;
+}
+
+/* =====================================================================
+   RENDER
+   ===================================================================== */
+function render(){
+  if(!S.profile){ renderSetup(); return; }
+  $('#tabs').classList.remove('hide'); $('#act').classList.remove('hide');
+  $('#tabs').innerHTML = TABS.map(([k,l,e])=>
+    `<a href="#${k}" class="${tab===k?'on':''}" data-e="${e}" onclick="go('${k}')">${l}</a>`).join('');
+  $('#act').innerHTML = `<button class="btn sm addbtn" onclick="openTx('in')">Add money</button>
+    <button class="btn sm ghost gearbtn" onclick="openSettings()" title="Settings" aria-label="Settings">⚙️</button>`;
+
+  const v = $('#view');
+  if(tab==='dashboard') v.innerHTML = viewHome();
+  if(tab==='money')     v.innerHTML = viewMoney();
+  if(tab==='budget')    v.innerHTML = viewBudget();
+  if(tab==='goals')     v.innerHTML = viewGoals();
+  if(tab==='learn')     v.innerHTML = viewLearn();
+  if(tab==='parent')    v.innerHTML = parentUnlocked ? viewParent() : viewLock();
+
+  $('#foot').innerHTML = `Smart Money Bro · everything is stored privately on this device
+    ${S.tx.length?` · ${S.tx.length} entries logged${streak()>1?` · 🔥 ${streak()} day streak`:''}`:''}`;
+}
+function go(t){
+  if(t!=='parent') parentUnlocked = false;
+  tab = t;
+  if(location.hash !== '#'+t){
+    // history API is blocked on file:// in some browsers — fall back to the hash
+    try{ history.replaceState(null,'','#'+t); }catch(e){ try{ location.hash = t; }catch(e2){} }
+  }
+  render();
+  try{ window.scrollTo(0,0); }catch(e){}
+}
+window.addEventListener('hashchange', ()=>{
+  const h = location.hash.replace('#','');
+  if(TABS.some(t=>t[0]===h) && h!==tab) go(h);
+});
+function greet(){ const h=new Date().getHours(); return h<12?'Good morning':h<17?'Good afternoon':'Good evening'; }
+
+/* ---------------- setup ---------------- */
+function renderSetup(){
+  $('#tabs').classList.add('hide'); $('#act').classList.add('hide'); $('#foot').innerHTML='';
+  $('#view').innerHTML = `
+  <div class="hero">
+    <div>
+      <div class="eyebrow">🎮 Your money HQ</div>
+      <h1>Make your money go <em>further</em></h1>
+      <p class="lede">Track what you get and what you spend, split it into jars, save up for something brilliant, and unlock rewards while you learn how money actually works.</p>
+    </div>
+    <div class="card" style="padding:26px">
+      <h3>Let's set you up</h3>
+      <label>What should we call you?</label>
+      <input class="in" id="su_name" placeholder="Your name" maxlength="20">
+      <label>How old are you?</label>
+      <select class="in" id="su_age">${[9,10,11,12,13,14,15,16,17,18].map(a=>`<option value="${a}" ${a===12?'selected':''}>${a} years old</option>`).join('')}</select>
+      <label>Your money symbol</label>
+      <div class="chips" id="su_cur">${CURRENCIES.map((c,i)=>`<button class="chip ${i===0?'on':''}" data-c="${c}" onclick="pick(this,'#su_cur')">${c}</button>`).join('')}</div>
+      <label>Choose your buddy</label>
+      <div class="chips" id="su_av">${AVATARS.map((a,i)=>`<button class="chip ${i===0?'on':''}" data-c="${a}" onclick="pick(this,'#su_av')" style="font-size:19px">${a}</button>`).join('')}</div>
+      <button class="btn wide" style="margin-top:24px" onclick="finishSetup()">Start tracking →</button>
+      <p class="note" style="text-align:center;margin-top:14px">Everything stays on this device. Nothing is uploaded anywhere.</p>
+    </div>
+  </div>`;
+}
+function pick(el, sel){ document.querySelectorAll(sel+' .chip').forEach(c=>c.classList.remove('on')); el.classList.add('on'); }
+const picked = sel => { const e = document.querySelector(sel+' .chip.on'); return e ? e.dataset.c : ''; };
+
+function finishSetup(){
+  const name = $('#su_name').value.trim();
+  if(!name){ toast('Please type your name first'); return; }
+  S.profile = { name, age:+$('#su_age').value, currency:picked('#su_cur')||'₹', avatar:picked('#su_av')||'🐷', pin:'1234' };
+  save(); go('dashboard'); confetti(80);
+  setTimeout(()=>toast('Welcome aboard, ' + name + '! Parent PIN is 1234 — change it in Parents.'), 500);
+}
+
+/* ---------------- hero art ---------------- */
+function heroArt(){
+  return `<div class="art">
+    <div class="coin a">$</div>
+    <div class="bankcard">
+      <div class="chip"></div>
+      <div class="face">${S.profile ? S.profile.avatar : '🐷'}</div>
+      <div class="bn">Junior Bank</div>
+      <div class="bs">Save · Spend · Share</div>
+      ${S.profile ? `<div class="bal"><span>My money</span><b>${esc(money(balance()))}</b></div>` : ''}
+    </div>
+    <div class="jars"><div class="jar">Save</div><div class="jar s">Spend</div></div>
+    <div class="coin b">$</div>
+  </div>`;
+}
+
+/* ---------------- DASHBOARD ---------------- */
+function viewHome(){
+  const bal = balance(), inn = monthIn(), out = monthOut(), kept = inn - out;
+  const cats = byCat(), recent = [...S.tx].sort((a,b)=> b.date.localeCompare(a.date) || b.id.localeCompare(a.id)).slice(0,6);
+  const fresh = S.tx.length === 0, j = jars();
+  return `
+  <div style="padding-top:22px">${cheerBanner()}</div>
+  <div class="hero" style="padding-top:8px">
+    <div>
+      <div class="eyebrow">🎮 Your money HQ</div>
+      <h1>${fresh ? 'Make your money go <em>further</em>' : greet()+', <em>'+esc(S.profile.name)+'</em>!'}</h1>
+      <p class="lede">${fresh
+        ? 'Plan pocket money, track spending, save for something brilliant, and learn what banks do in plain kid-friendly language.'
+        : `You have <b style="color:var(--ink)">${esc(money(bal))}</b> right now. ${
+            inn>0 && kept>=0 ? `You kept ${Math.round(kept/inn*100)}% of everything you got this month.`
+                             : 'Log what you get and what you spend — it takes five seconds.'}`}</p>
+      <div class="cta">
+        <button class="btn" onclick="openTx('in')">Add money</button>
+        <button class="btn ghost" onclick="go('learn')">Money lessons</button>
+      </div>
+    </div>
+    ${heroArt()}
+  </div>
+
+  <div class="sec">${statStrip()}</div>
+
+  ${shareCard() ? `<div class="sec">${shareCard()}</div>` : ''}
+
+  <div class="sec">
+    <div class="grid ${S.match.on?'g2e':''}">
+      ${S.match.on ? matchCard() : ''}
+      ${tipCard()}
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="grid g2">
+      <div class="card">
+        <div class="panel-h">
+          <div><div class="eyebrow-sm">Budget jars</div>
+            <h3>Split every ${cur()==='₹'?'rupee':'dollar'} before spending</h3></div>
+          <div class="right"><button class="btn sm ghost" onclick="resetJars()">Reset split</button></div>
+        </div>
+        <div class="fields">
+          <div>
+            <label class="flabel">Money to split this month</label>
+            <input class="in" id="j_base" type="number" inputmode="decimal" min="0"
+              value="${jarBase()||''}" placeholder="0" onchange="jarCommit()">
+            <div class="sval" id="j_hint">${S.jars.base==null?'Using what you actually got in':'Your own number — clear it to use real income'}</div>
+          </div>
+          <div>
+            <label class="flabel">Save %</label>
+            <input class="slider" id="j_save" type="range" min="0" max="90" step="5"
+              value="${S.jars.savePct}" oninput="jarPreview()" onchange="jarCommit()">
+            <div class="sval" id="jl_save">${S.jars.savePct}%</div>
+          </div>
+          <div>
+            <label class="flabel">Share %</label>
+            <input class="slider" id="j_share" type="range" min="0" max="50" step="5"
+              value="${S.jars.sharePct}" oninput="jarPreview()" onchange="jarCommit()">
+            <div class="sval" id="jl_share">${S.jars.sharePct}%</div>
+          </div>
+        </div>
+        <div class="jarcards">
+          <div class="jarc save"><i>$</i><b id="jv_save">${esc(money(j.save))}</b><small>Save first</small></div>
+          <div class="jarc spend"><i>?</i><b id="jv_spend">${esc(money(j.spend))}</b><small>Spend wisely</small></div>
+          <div class="jarc share"><i>+</i><b id="jv_share">${esc(money(j.share))}</b><small>Give or help</small></div>
+        </div>
+        <div class="callout" style="margin-top:20px">${jarAdvice()}</div>
+      </div>
+
+      <div class="card">
+        <div class="panel-h">
+          <div><div class="eyebrow-sm">Tracker</div><h3>Add money or spending</h3></div>
+        </div>
+        <div class="fields two">
+          <div><label class="flabel">What happened?</label>
+            <select class="in" id="tk_type" onchange="tkSwap()">
+              <option value="out">I spent money</option>
+              <option value="in">I got money</option>
+            </select></div>
+          <div><label class="flabel">Amount</label>
+            <input class="in" id="tk_amt" type="number" inputmode="decimal" min="0" step="0.01" placeholder="0"></div>
+        </div>
+        <div style="margin-top:18px"><label class="flabel">Category</label>
+          <select class="in" id="tk_cat">${OUT_CATS.map(c=>`<option value="${c.id}">${c.e} ${c.n}</option>`).join('')}</select></div>
+        <div style="margin-top:18px"><label class="flabel">Description</label>
+          <input class="in" id="tk_note" maxlength="40" placeholder="Example: school snack"></div>
+        <button class="btn wide" style="margin-top:22px" onclick="tkAdd()">Add entry</button>
+        <p class="note" style="text-align:center;margin-top:12px">Logged today · use <b>Money</b> to backdate an entry</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h"><div><h2>Where your money went</h2>
+      <p>${cats.length? monthName(thisMonth())+' so far' : 'Log a spend and your chart appears here'}</p></div>
+      <div class="right"><button class="btn sm ghost" onclick="openTx('out')">Log a spend</button></div></div>
+    <div class="grid g2">
+      <div class="card">
+        ${cats.length ? `
+        <div style="display:flex;gap:26px;align-items:center;flex-wrap:wrap">
+          ${donut(cats, out, 170)}
+          <div style="flex:1;min-width:190px">
+            ${cats.slice(0,6).map(([c,v])=>`
+              <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;font-size:14px;font-weight:700">
+                <i class="dot" style="background:${cat(c).c}"></i>
+                <span style="flex:1">${cat(c).e} ${esc(cat(c).n)}</span>
+                <span>${esc(money(v))}</span>
+                <small style="color:var(--muted);width:38px;text-align:right;font-weight:600">${Math.round(v/out*100)}%</small>
+              </div>`).join('')}
+            ${cats.length>6?`<p class="note">+${cats.length-6} more</p>`:''}
+          </div>
+        </div>
+        <div class="callout" style="margin-top:20px">Biggest slice is <b>${esc(cat(cats[0][0]).n)}</b> at ${esc(money(cats[0][1]))} — ${Math.round(cats[0][1]/out*100)}% of everything you spent. Is that where you <i>thought</i> it was going?</div>
+        ` : `<div class="empty">Nothing spent yet this month.<br>Tap <b>Log a spend</b> and this fills up with a colourful chart. 📊</div>`}
+      </div>
+      <div class="card">
+        <h3>Recent activity ${S.tx.length?`<a class="more" href="#money" onclick="go('money')">See all →</a>`:''}</h3>
+        <div style="margin-top:12px">
+          ${recent.length ? recent.map(txRow).join('')
+            : `<div class="empty">Nothing here yet.<br>Every rupee in and out starts with one tap. 👆</div>`}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  ${S.goals.length ? `<div class="sec">
+    <div class="sec-h"><div><h2>Saving for</h2><p>Progress on your goals</p></div>
+      <div class="right"><button class="btn sm ghost" onclick="go('goals')">All goals →</button></div></div>
+    <div class="grid ${S.goals.length>1?'g2e':''}">${S.goals.slice(0,2).map(goalCard).join('')}</div>
+  </div>` : `<div class="sec">
+    <div class="card" style="display:flex;gap:20px;align-items:center;flex-wrap:wrap;background:var(--bg2)">
+      <div style="font-size:40px">🎯</div>
+      <div style="flex:1;min-width:220px"><h3>Pick something to save for</h3>
+        <p class="note">A bike, headphones, a concert ticket. Saving is far easier when it points at something you actually want.</p></div>
+      <button class="btn" onclick="go('goals')">Set a goal</button>
+    </div></div>`}`;
+}
+
+/* ---------------- match + tips cards ---------------- */
+function matchCard(){
+  const earned = matchEarned(), paid = matchPaid(), kept = Math.max(0, keptMonth());
+  const capped = S.match.cap > 0 && kept*S.match.pct/100 > S.match.cap;
+  return `<div class="match">
+    <div class="mh"><i>🎁</i><b>Parent top-up</b>
+      ${paid?'<span class="ribbon" style="margin-left:auto">✅ Paid</span>':''}</div>
+    <div class="amt">${esc(money(earned))}</div>
+    <div class="note" style="font-size:14px">
+      ${paid ? `Your parents have already added this to your money this month. Nice work, ${esc(nm())}.`
+       : earned>0 ? `Your parents add <b>${S.match.pct}%</b> of everything you keep. You have kept ${esc(money(kept))} so far${capped?` — you have hit the ${esc(money(S.match.cap))} monthly cap, so this is the maximum`:`, so keeping more grows this number`}.`
+       : `Keep some of your money this month and your parents will add <b>${S.match.pct}%</b> of it on top${S.match.cap>0?` (up to ${esc(money(S.match.cap))})`:''}. Free money for saving.`}
+    </div>
+    ${!paid && earned>0 ? `<div class="bar-t" style="height:11px;margin-top:16px"><i style="width:${S.match.cap>0?Math.min(100,earned/S.match.cap*100):100}%;background:linear-gradient(90deg,var(--lime),var(--teal))"></i></div>` : ''}
+  </div>`;
+}
+/* Money hacks are collectible cards: a mystery card you flip to reveal,
+   then "collect". The set fills up like stickers in an album. */
+const tipIndex = () => {
+  const list = TIPS[tier()];
+  const raw = (S.tipIdx != null ? S.tipIdx : Math.floor(Date.now()/864e5));
+  return ((raw % list.length) + list.length) % list.length;
+};
+const gotHacks = () => (S.hacks && S.hacks[tier()]) || [];
+function tipCard(){
+  const list = TIPS[tier()], i = tipIndex(), t = list[i];
+  const got = gotHacks(), have = got.includes(i), n = got.length;
+  const buddy = (S.profile && S.profile.avatar) || '🐷';
+  return `<div class="hack ${tipFlipped?'flip':''}" id="hack">
+    <div class="hackin">
+
+      <div class="face-a" onclick="flipHack()">
+        <div class="thought">
+          <div class="kicker">Money hack #${i+1}</div>
+          <div class="bigemo">${have ? t.e : '💭'}</div>
+          <div class="teaser">${have ? esc(t.t) : 'Hmm… what is the trick here?'}</div>
+          <div class="tap">${have ? 'Read it again ↻' : 'Tap to find out!'}</div>
+        </div>
+        <div class="thinker">${mascot('small')}</div>
+      </div>
+
+      <div class="face-b">
+        <div class="bh"><em>${t.e}</em><span>${esc(t.t)}</span></div>
+        <div class="bw">${esc(t.w)}</div>
+        <div class="bf">
+          ${have ? `<span class="got-stamp">✅ Collected</span>`
+                 : `<button class="btn sm sun" onclick="collectHack(${i})">Got it! +1</button>`}
+          <button class="btn sm ghost" onclick="flipHack()">Flip back</button>
+          <button class="btn sm ghost" onclick="tipStep(1)">Next ›</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <div class="hackbar">
+    <button class="btn sm ghost" onclick="tipStep(-1)">‹</button>
+    <button class="btn sm ghost" onclick="tipStep(1)">›</button>
+    <span class="cnt">${n} of ${list.length} hacks collected</span>
+    <div class="dots">${list.map((_,k)=>`<i class="${k===i?'on':(got.includes(k)?'got':'')}"></i>`).join('')}</div>
+  </div>`;
+}
+let tipFlipped = false;
+function flipHack(){
+  tipFlipped = !tipFlipped;
+  const el = document.getElementById('hack');
+  if(el) el.classList.toggle('flip', tipFlipped);
+}
+function collectHack(i){
+  if(!S.hacks) S.hacks = {};
+  const k = tier();
+  S.hacks[k] = S.hacks[k] || [];
+  if(!S.hacks[k].includes(i)) S.hacks[k].push(i);
+  save();
+  const total = TIPS[k].length;
+  if(S.hacks[k].length === total){ award('hacks'); toast('🏆 Every money hack collected. You are a legend!'); }
+  else { confetti(26); toast('Collected! ' + S.hacks[k].length + ' of ' + total + ' hacks'); }
+  render();
+}
+function tipStep(d){
+  const list = TIPS[tier()];
+  S.tipIdx = ((tipIndex() + d) % list.length + list.length) % list.length;
+  tipFlipped = false;
+  save(); render();
+}
+
+/* ---------------- stat strip ---------------- */
+function statStrip(){
+  const inn = monthIn(), out = monthOut(), cats = byCat(), left = leftToSpend(), saved = savedTotal();
+  const goal = S.goals.find(g=>g.saved < g.target) || S.goals[0];
+  const spendJar = jars().spend;
+  return `<div class="grid g4">
+    <div class="stat t-lime"><div class="emo">💰</div><span>This month money in</span><b>${esc(money(inn))}</b>
+      <small>${S.allowance.amount>0 ? 'Allowance '+esc(money(S.allowance.amount))+' every '+S.allowance.freq+'.'
+              : 'Pocket money, gifts, chores, and part-time work.'}</small></div>
+
+    <div class="stat t-tang"><div class="emo">🛍️</div><span>Money spent</span><b>${esc(money(out))}</b>
+      <small>${cats.length ? 'Most spent on '+esc(cat(cats[0][0]).n)+': '+esc(money(cats[0][1]))+'.'
+                           : 'Nothing logged yet this month.'}</small></div>
+
+    <div class="stat ${left>0 ? 't-sky' : 't-pink'}"><div class="emo">${left>0?'🎈':'⏳'}</div>
+      <span>Left to spend</span><b>${esc(money(left))}</b>
+      <small>${!spendJar ? 'Set your split below to fill the spend jar.'
+              : left>0 ? 'Out of a '+esc(money(spendJar))+' spend jar.'
+                       : 'Your spend jar is empty. Time to pause and plan.'}</small></div>
+
+    <div class="stat t-grape"><div class="emo">🏆</div><span>Saved so far</span><b>${esc(money(saved))}</b>
+      <small>${goal ? Math.round(Math.min(100,goal.saved/goal.target*100))+'% of '+esc(goal.name)+' funded.'
+                    : 'Add a goal to give this a target.'}</small></div>
+  </div>`;
+}
+
+/* ---------------- jar controls ---------------- */
+function jarAdvice(){
+  const j = jars(), used = spendUsed(), left = leftToSpend();
+  if(!j.base) return `Log some money coming in — or type an amount above — and this splits it into three jars for you.`;
+  if(S.jars.savePct + S.jars.sharePct > 100) return `Save % and Share % add up to more than everything you have. Pull one of them down.`;
+  if(left === 0 && used > 0) return `You have used the whole spend jar this month. Nothing has gone wrong — it just means anything else has to come out of savings, or wait for next month.`;
+  if(S.jars.savePct < 10) return `Saving under 10% is a thin cushion. Nudge the Save slider up by 5% and see whether you even notice.`;
+  return `Save ${S.jars.savePct}% first, then live on the ${esc(money(j.spend))} spend jar. ${used>0 ? esc(money(used))+' used so far.' : 'Nothing spent from it yet.'}`;
+}
+function readJars(){
+  const b = $('#j_base') ? $('#j_base').value.trim() : '';
+  return { base: b==='' ? null : Math.max(0, parseFloat(b)||0),
+           savePct: +$('#j_save').value, sharePct: +$('#j_share').value };
+}
+function jarPreview(){
+  const r = readJars(), b = r.base != null ? r.base : monthIn();
+  const sv = b*r.savePct/100, sh = b*r.sharePct/100, sp = Math.max(0, b-sv-sh);
+  $('#jl_save').textContent = r.savePct + '%';
+  $('#jl_share').textContent = r.sharePct + '%';
+  $('#jv_save').textContent = money(sv);
+  $('#jv_share').textContent = money(sh);
+  $('#jv_spend').textContent = money(sp);
+}
+function jarCommit(){ S.jars = readJars(); save(); render(); }
+function resetJars(){ S.jars = { base:null, savePct:30, sharePct:10 }; save(); render(); toast('Split reset to 30% save · 10% share'); }
+
+/* ---------------- inline tracker ---------------- */
+function tkSwap(){
+  const type = $('#tk_type').value, cats = type==='in' ? IN_CATS : OUT_CATS;
+  $('#tk_cat').innerHTML = cats.map(c=>`<option value="${c.id}">${c.e} ${c.n}</option>`).join('');
+  $('#tk_note').placeholder = type==='in' ? 'Example: washed the car' : 'Example: school snack';
+}
+function tkAdd(){
+  const type = $('#tk_type').value, amt = parseFloat($('#tk_amt').value);
+  if(!(amt > 0)){ toast('Type an amount bigger than zero'); $('#tk_amt').focus(); return; }
+  S.tx.push({ id:uid(), type, amt, cat:$('#tk_cat').value, note:$('#tk_note').value.trim(), date:today() });
+  touchStreak();
+  if(S.tx.length===1) award('first');
+  if(S.tx.filter(x=>x.type==='out').length >= 5 && Object.keys(S.budget).length) award('budget');
+  const inn = monthIn(); if(inn>0 && (inn-monthOut())/inn >= 0.2 && S.tx.length>=4) award('saver');
+  save(); render();
+  toast(type==='in' ? '💰 ' + money(amt) + ' added' : 'Logged ' + money(amt) + ' spent');
+}
+
+function txRow(x){
+  const c = cat(x.cat);
+  return `<div class="tx">
+    <div class="ic">${c.e}</div>
+    <div class="t"><b>${esc(x.note || c.n)}</b><small>${esc(c.n)} · ${fmtDate(x.date)}</small></div>
+    <div class="v ${x.type==='in'?'plus':'minus'}">${x.type==='in'?'+':'−'}${esc(money(x.amt))}</div>
+    <button class="del" onclick="delTx('${x.id}')" aria-label="Delete">✕</button>
+  </div>`;
+}
+function fmtDate(d){
+  if(d===today()) return 'Today';
+  const y=new Date(); y.setDate(y.getDate()-1);
+  if(d===ymd(y)) return 'Yesterday';
+  return new Date(d+'T00:00:00').toLocaleDateString(undefined,{day:'numeric',month:'short'});
+}
+const monthName = m => new Date(m+'-01T00:00:00').toLocaleDateString(undefined,{month:'long',year:'numeric'});
+
+/* ---------------- MONEY ---------------- */
+function viewMoney(){
+  const list = [...S.tx].sort((a,b)=> b.date.localeCompare(a.date) || b.id.localeCompare(a.id));
+  const groups = {};
+  list.forEach(x => { (groups[ym(x.date)] = groups[ym(x.date)] || []).push(x); });
+  const ms = Object.keys(groups).sort().reverse();
+  return `
+  <div class="sec" style="padding-top:40px">
+    <div class="sec-h"><div><h2>My money diary</h2><p>Every rupee in, every rupee out</p></div>
+      <div class="right">
+        <button class="btn" onclick="openTx('in')">Got money</button>
+        <button class="btn ghost" onclick="openTx('out')">Spent money</button>
+      </div></div>
+    ${ms.length ? ms.map(m=>`
+      <div class="card" style="margin-bottom:18px">
+        <h3>${monthName(m)}</h3>
+        <p class="note">In ${esc(money(monthIn(m)))} · Out ${esc(money(monthOut(m)))} · Kept ${esc(money(monthIn(m)-monthOut(m)))}</p>
+        <div style="margin-top:14px">${groups[m].map(txRow).join('')}</div>
+      </div>`).join('')
+     : `<div class="card"><div class="empty">Your diary is empty.<br>Log money the moment you get it or spend it —<br>after two weeks the patterns get <b>really</b> interesting. ✍️</div></div>`}
+  </div>`;
+}
+
+/* ---------------- BUDGET ---------------- */
+function viewBudget(){
+  const set = OUT_CATS.filter(c => S.budget[c.id] > 0);
+  const planned = set.reduce((t,c)=>t+S.budget[c.id],0);
+  const spent = set.reduce((t,c)=>t+spentIn(c.id),0);
+  const over = set.filter(c=>spentIn(c.id) > S.budget[c.id]);
+  return `
+  <div class="sec" style="padding-top:40px">
+    <div class="sec-h"><div><h2>My monthly plan</h2>
+      <p>Decide where money goes <i>before</i> it disappears</p></div>
+      <div class="right"><button class="btn" onclick="openBudget()">${set.length?'Edit budget':'Build my budget'}</button></div></div>
+
+    ${set.length ? `
+    <div class="grid g2">
+      <div class="card">
+        <h3>${monthName(thisMonth())}</h3>
+        <p class="note">Planned ${esc(money(planned))} · spent ${esc(money(spent))}</p>
+        <div class="bar-t" style="height:13px;margin-top:16px"><i style="width:${Math.min(100, planned?spent/planned*100:0)}%;background:${spent>planned?'var(--coral)':'var(--teal)'}"></i></div>
+        <div class="row" style="margin-top:10px"><small>${planned?Math.round(spent/planned*100):0}% of plan used</small>
+          <small>${spent<=planned ? esc(money(planned-spent))+' left' : esc(money(spent-planned))+' over'}</small></div>
+        ${over.length ? `<div class="callout warn" style="margin-top:20px">⚠️ Over the limit on <b>${over.map(c=>esc(c.n)).join(', ')}</b>. Not a disaster — either ease off for the rest of the month, or raise that limit and lower another one.</div>`
+                      : `<div class="callout" style="margin-top:20px">✅ Everything inside its limit so far. Keep going.</div>`}
+      </div>
+      <div class="card"><h3>Month by month</h3>${history()}</div>
+    </div>
+
+    <div class="card" style="margin-top:18px"><h3>Category by category</h3>
+      <div class="grid g2e" style="margin-top:18px">
+      ${set.map(c=>{
+        const b=S.budget[c.id], s=spentIn(c.id), p=Math.min(100,s/b*100);
+        const col = s>b ? 'var(--coral)' : p>80 ? 'var(--warn)' : 'var(--good)';
+        return `<div class="blk">
+          <div class="row"><span>${c.e} ${esc(c.n)}</span><span style="color:${col}">${esc(money(s))} <small>/ ${esc(money(b))}</small></span></div>
+          <div class="bar-t"><i style="width:${p}%;background:${col}"></i></div>
+          <div class="row" style="margin-top:7px"><small>${s>b?'Over by '+esc(money(s-b)):esc(money(b-s))+' still available'}</small><small>${Math.round(p)}%</small></div>
+        </div>`;}).join('')}
+      </div>
+    </div>
+    ` : `<div class="grid g2">
+      <div class="card"><div class="empty">No budget yet.<br>
+        A budget is just a plan for your own money — you set the limits, nobody else.<br>
+        <button class="btn" style="margin-top:20px" onclick="openBudget()">Build my budget</button></div></div>
+      <div class="card"><h3>Month by month</h3>${history()}</div>
+    </div>`}
+  </div>`;
+}
+function history(){
+  const ms = [...new Set(S.tx.map(x=>ym(x.date)))].sort().reverse().slice(0,6);
+  if(!ms.length) return `<div class="empty">Come back after a few weeks of logging — your trend shows up here.</div>`;
+  const max = Math.max(...ms.map(m=>Math.max(monthIn(m),monthOut(m))),1);
+  return `<div style="margin-top:16px">${ms.map(m=>`
+    <div class="blk">
+      <div class="row"><span>${monthName(m)}</span><small>kept ${esc(money(monthIn(m)-monthOut(m)))}</small></div>
+      <div class="bar-t" style="margin-top:8px"><i style="width:${monthIn(m)/max*100}%;background:var(--good)"></i></div>
+      <div class="bar-t" style="margin-top:5px"><i style="width:${monthOut(m)/max*100}%;background:var(--coral)"></i></div>
+    </div>`).join('')}
+    <div class="legend"><div><i class="dot" style="background:var(--good)"></i>Money in</div><div><i class="dot" style="background:var(--coral)"></i>Money out</div></div>
+  </div>`;
+}
+
+/* ---------------- GOALS ---------------- */
+function viewGoals(){
+  return `
+  <div class="sec" style="padding-top:40px">
+    <div class="sec-h"><div><h2>Saving for something brilliant</h2>
+      <p>Saving works best when it has a name and a picture attached</p></div>
+      <div class="right"><button class="btn" onclick="openGoal()">Add a goal</button></div></div>
+    ${S.goals.length
+      ? `<div class="grid g2e">${S.goals.map(goalCard).join('')}</div>`
+      : `<div class="card"><div class="empty">No goals yet.<br>A bike? Headphones? A concert ticket?<br>
+          Name it, price it, and watch the bar fill up. 🎯
+          <br><button class="btn" style="margin-top:20px" onclick="openGoal()">Add my first goal</button></div></div>`}
+  </div>`;
+}
+function goalCard(g){
+  const p = Math.min(100, g.saved/g.target*100), left = Math.max(0, g.target-g.saved);
+  return `<div class="goal card">
+    <div class="gh"><div class="ge">${g.emoji}</div>
+      <div style="flex:1"><div class="gn">${esc(g.name)}</div>
+        <div class="gs">${esc(money(g.saved))} of ${esc(money(g.target))} · ${Math.round(p)}%</div></div>
+      ${p>=100?'<div style="font-size:24px">✅</div>':''}
+    </div>
+    <div class="bar-t" style="height:11px;margin-top:14px"><i style="width:${p}%;background:${p>=100?'var(--good)':'var(--teal)'}"></i></div>
+    <div class="gs" style="margin-top:11px">${p>=100 ? '🎉 Done — you saved every bit of it yourself.' : esc(money(left)) + ' to go' + eta(left)}</div>
+    <div class="gbtns">
+      <button class="btn sm" onclick="addToGoal('${g.id}')">Add savings</button>
+      <button class="btn sm ghost" onclick="delGoal('${g.id}')">Delete</button>
+    </div>
+  </div>`;
+}
+function eta(left){
+  const ms = [...new Set(S.tx.filter(x=>x.type==='in').map(x=>ym(x.date)))];
+  if(!ms.length || !left) return '';
+  const avgKept = ms.reduce((t,m)=>t + Math.max(0, monthIn(m)-monthOut(m)), 0) / ms.length;
+  if(avgKept <= 0) return ' · you are not keeping anything spare yet — check your budget';
+  const n = Math.ceil(left/avgKept);
+  return ` · about <b>${n} month${n>1?'s':''}</b> at your current saving rate`;
+}
+
+/* ---------------- LEARN ---------------- */
+function viewLearn(){
+  const ls = allLessons(), done = ls.filter(l=>S.done.includes(l.id)).length;
+  const tierName = {junior:'Ages 9–12', mid:'Ages 13–15', senior:'Ages 16–18'}[tier()];
+  return `
+  <div class="sec" style="padding-top:40px">
+    <div class="sec-h"><div><h2>Money lessons</h2>
+      <p>Plain language, no jargon · ${tierName}</p></div></div>
+    <div class="grid g2">
+      <div class="card">
+        <div class="narr" style="margin:0 0 16px">
+          ${mascot()}
+          <div class="say" style="min-height:0">
+            <p class="cent-says" style="margin:0">Hi, I'm Cent! 🪙</p>
+            <p style="margin:8px 0 0">${done===ls.length
+              ? `You've finished every single lesson. Honestly? Show-off. 😎 Come back and re-read any of them whenever you like.`
+              : `Pick a lesson and I'll talk you through it bit by bit. No boring walls of text — I'd fall asleep too.`}</p>
+          </div>
+        </div>
+        <h3>Your lessons</h3>
+        <div class="bar-t" style="margin-top:14px"><i style="width:${done/ls.length*100}%;background:var(--teal)"></i></div>
+        <p class="note">${done} of ${ls.length} finished</p>
+        <div style="margin-top:18px">
+          ${ls.map(l=>`<button class="lesson ${S.done.includes(l.id)?'done':''}" onclick="openLesson('${l.id}')">
+            <span class="le">${l.e}</span><span style="flex:1"><b>${esc(l.t)}</b><small>${esc(l.s)}</small></span>
+            <span class="chk">${S.done.includes(l.id)?'✓':'→'}</span>
+          </button>`).join('')}
+        </div>
+      </div>
+      <div class="card">
+        <h3>🏅 My reward wall</h3>
+        <p class="note">${S.badges.length} of ${BADGES.length} unlocked — earned by doing, not by guessing</p>
+        <div class="rw">${BADGES.map(b=>`<div class="${S.badges.includes(b.id)?'on':''}">
+          <i>${b.e}</i><b>${b.n}</b><small>${S.badges.includes(b.id)?'Unlocked!':esc(BADGE_HINT[b.id])}</small></div>`).join('')}</div>
+        ${S.badges.length===BADGES.length?`<div class="callout" style="margin-top:16px">🎉 Every single badge unlocked, ${esc(nm())}. That is the whole wall. Legend.</div>`:''}
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ---------------- PARENT ---------------- */
+function viewLock(){
+  return `<div class="sec" style="padding-top:56px">
+    <div class="card" style="max-width:420px;margin:0 auto;text-align:center;padding:34px">
+      <div style="font-size:44px">🔒</div>
+      <h2 style="font-size:26px;margin-top:10px">Parents</h2>
+      <p class="note">Enter the 4-digit PIN</p>
+      <div class="pins" id="pins">${[0,1,2,3].map(()=>'<i></i>').join('')}</div>
+      <div class="pad">${[1,2,3,4,5,6,7,8,9].map(n=>`<button onclick="pinTap('${n}')">${n}</button>`).join('')}
+        <button onclick="pinTap('c')" style="font-size:13px;font-weight:800">Clear</button>
+        <button onclick="pinTap('0')">0</button>
+        <button onclick="pinTap('b')">⌫</button></div>
+      <p class="note" style="margin-top:18px">Default PIN is <b>1234</b> until you change it.</p>
+    </div></div>`;
+}
+function pinTap(k){
+  if(k==='c') pinBuf=''; else if(k==='b') pinBuf=pinBuf.slice(0,-1); else if(pinBuf.length<4) pinBuf+=k;
+  document.querySelectorAll('#pins i').forEach((el,i)=> el.classList.toggle('f', i<pinBuf.length));
+  if(pinBuf.length===4){
+    if(pinMode==='new'){ S.profile.pin = pinBuf; save(); pinBuf=''; pinMode=null; closeSheet(); toast('PIN updated'); return; }
+    if(pinMode==='tools'){
+      const good = pinBuf === (S.profile.pin||'1234');
+      pinBuf=''; document.querySelectorAll('#pins i').forEach(el=>el.classList.remove('f'));
+      if(good){ pinMode=null; toolsSheet(); } else toast('Wrong PIN — try again');
+      return;
+    }
+    if(pinBuf === (S.profile.pin||'1234')){ parentUnlocked = true; pinBuf=''; render(); }
+    else { pinBuf=''; document.querySelectorAll('#pins i').forEach(el=>el.classList.remove('f')); toast('Wrong PIN — try again'); }
+  }
+}
+function viewParent(){
+  const cats = byCat(), out = monthOut(), inn = monthIn(), kept = inn-out;
+  const ls = allLessons(), doneN = ls.filter(l=>S.done.includes(l.id)).length;
+  const noBudget = OUT_CATS.filter(c=>!S.budget[c.id]).length === OUT_CATS.length;
+  return `
+  <div class="sec" style="padding-top:40px">
+    <div class="sec-h"><div><h2>Parent dashboard</h2>
+      <p>${esc(S.profile.name)}, age ${S.profile.age} · ${S.tx.length} entries · ${streak()} day streak</p></div>
+      <div class="right"><button class="btn sm ghost" onclick="parentUnlocked=false;render()">Lock 🔒</button></div></div>
+
+    <div class="grid g3">
+      <div class="stat"><span>Came in</span><b style="color:var(--good)">${esc(money(inn))}</b><small>${monthName(thisMonth())}</small></div>
+      <div class="stat"><span>Went out</span><b>${esc(money(out))}</b><small>${cats.length} categories used</small></div>
+      <div class="stat tealbg"><span>Kept</span><b>${esc(money(kept))}</b><small>${inn>0?Math.round(kept/inn*100)+'% of income':'no income logged'}</small></div>
+    </div>
+
+    <div class="grid g2" style="margin-top:18px">
+      <div class="card"><h3>Talking points</h3>
+        <div style="margin-top:16px">${insights(cats,out,inn,kept,doneN,ls.length,noBudget).map(t=>`<div class="callout">${t}</div>`).join('')}</div>
+      </div>
+      <div class="card"><h3>Spending breakdown</h3>
+        ${cats.length ? `<div style="display:flex;gap:22px;align-items:center;flex-wrap:wrap;margin-top:16px">
+          ${donut(cats,out,140)}
+          <div style="flex:1;min-width:170px">${cats.map(([c,v])=>`
+            <div style="display:flex;align-items:center;gap:9px;margin-bottom:8px;font-size:13.5px;font-weight:700">
+              <i class="dot" style="background:${cat(c).c}"></i><span style="flex:1">${esc(cat(c).n)}</span>
+              <span>${esc(money(v))}</span>
+              <small style="color:var(--muted);width:36px;text-align:right;font-weight:600">${Math.round(v/out*100)}%</small></div>`).join('')}
+          </div></div>` : `<div class="empty">No spending logged this month.</div>`}
+      </div>
+    </div>
+
+    <div class="grid g3" style="margin-top:18px">
+      <div class="card"><h3>Allowance</h3>
+        <p class="note">A record and a reminder — no real money moves.</p>
+        <div style="font-size:26px;font-weight:800;letter-spacing:-.03em;margin-top:14px">
+          ${S.allowance.amount>0 ? esc(money(S.allowance.amount)) + ' <span style="font-size:14px;color:var(--muted);font-weight:700">/ '+S.allowance.freq+'</span>' : '<span style="font-size:16px;color:var(--muted)">Not set</span>'}</div>
+        <div class="gbtns">
+          <button class="btn sm" onclick="openAllowance()">${S.allowance.amount>0?'Change':'Set allowance'}</button>
+          ${S.allowance.amount>0?`<button class="btn sm ghost" onclick="payAllowance()">Log payment</button>`:''}
+        </div>
+      </div>
+      <div class="card"><h3>Savings match 🎁</h3>
+        <p class="note">Add a percentage of whatever they manage to keep. Nothing moves automatically — you log it when you actually hand it over.</p>
+        <div style="font-size:24px;font-weight:800;letter-spacing:-.03em;margin-top:14px">
+          ${S.match.on ? S.match.pct+'% match'+(S.match.cap>0?' <span style="font-size:14px;color:var(--muted);font-weight:700">· cap '+esc(money(S.match.cap))+'</span>':'')
+                       : '<span style="font-size:16px;color:var(--muted)">Switched off</span>'}</div>
+        ${S.match.on ? `<p class="note" style="margin-top:8px">Earned so far this month: <b>${esc(money(matchEarned()))}</b>${matchPaid()?' · already paid ✅':''}</p>` : ''}
+        <div class="gbtns">
+          <button class="btn sm" onclick="openMatch()">${S.match.on?'Change':'Set up match'}</button>
+          ${S.match.on && matchEarned()>0 && !matchPaid() ? `<button class="btn sm sun" onclick="payMatch()">Pay ${esc(money(matchEarned()))} now</button>` : ''}
+        </div>
+      </div>
+      <div class="card"><h3>Learning progress</h3>
+        <div class="bar-t" style="margin-top:16px"><i style="width:${doneN/ls.length*100}%;background:var(--teal)"></i></div>
+        <p class="note">${doneN} of ${ls.length} lessons done</p>
+        <div class="bar-t" style="margin-top:16px"><i style="width:${S.badges.length/BADGES.length*100}%;background:var(--gold)"></i></div>
+        <p class="note">${S.badges.length} of ${BADGES.length} badges earned</p>
+      </div>
+      <div class="card"><h3>Controls</h3>
+        <div class="gbtns" style="margin-top:16px">
+          <button class="btn sm ghost" onclick="pinMode='new';pinBuf='';openNewPin()">Change PIN</button>
+          <button class="btn sm ghost" onclick="exportCSV()">Export CSV</button>
+          <button class="btn sm ghost" onclick="exportJSON()">Backup</button>
+          <button class="btn sm danger" onclick="wipe()">Erase all</button>
+        </div>
+        <p class="note" style="margin-top:14px">Data is stored only in this browser on this device. Clearing browser data deletes it, so take a backup now and then.</p>
+      </div>
+    </div>
+  </div>`;
+}
+function insights(cats,out,inn,kept,doneN,total,noBudget){
+  const t = [];
+  if(!S.tx.length) return ['No entries yet. Sit down together and log the last few things they bought — the habit sticks much faster with company.'];
+  if(cats.length) t.push(`Biggest category this month is <b>${esc(cat(cats[0][0]).n)}</b> at ${esc(money(cats[0][1]))} (${Math.round(cats[0][1]/out*100)}% of spending). Worth asking whether that matches what they <i>thought</i> they were spending.`);
+  if(inn>0 && kept/inn >= 0.2) t.push(`They kept ${Math.round(kept/inn*100)}% of what came in. That is a strong savings rate — worth saying out loud.`);
+  if(inn>0 && kept < 0) t.push(`They spent more than they received this month, dipping into earlier savings. A good moment to talk about running out before month end.`);
+  if(noBudget) t.push(`No budget set yet. Building one together is the single highest-value ten minutes you can spend in this app.`);
+  if(S.goals.length===0) t.push(`No savings goal yet. Saving is much easier when it points at something specific they actually want.`);
+  const small = S.tx.filter(x=>x.type==='out' && ym(x.date)===thisMonth() && x.amt <= (out/Math.max(1,cats.length))/4);
+  if(small.length >= 6) t.push(`${small.length} small purchases this month totalling ${esc(money(small.reduce((a,b)=>a+b.amt,0)))}. Small repeated spends are usually the invisible leak.`);
+  if(doneN < total) t.push(`${total-doneN} lesson${total-doneN>1?'s':''} still unread. They are short — try one together at the weekend.`);
+  return t.slice(0,4);
+}
+
+/* =====================================================================
+   MODALS / ACTIONS
+   ===================================================================== */
+function openSheet(html){ $('#sheetin').innerHTML = html; $('#sheet').classList.add('on'); }
+function closeSheet(){ $('#sheet').classList.remove('on'); pinMode=null; pinBuf=''; try{ stopSpeak(); }catch(e){} }
+$('#sheet').addEventListener('click', e => { if(e.target.id==='sheet') closeSheet(); });
+document.addEventListener('keydown', e => { if(e.key==='Escape') closeSheet(); });
+function head(t){ return `<div class="sheeth"><h2>${t}</h2><button onclick="closeSheet()">✕</button></div>`; }
+
+/* --- add transaction --- */
+function openTx(type){
+  const cats = type==='in' ? IN_CATS : OUT_CATS;
+  openSheet(`${head(type==='in'?'I got money':'I spent money')}
+    <p class="note">${type==='in'?'Pocket money, chores, a gift, work you did.':'Anything you paid for, big or small.'}</p>
+    <label>How much?</label>
+    <input class="in big" id="tx_amt" type="number" inputmode="decimal" min="0" step="0.01" placeholder="0">
+    <label>${type==='in'?'Where did it come from?':'What was it for?'}</label>
+    <div class="chips" id="tx_cat">${cats.map((c,i)=>`<button class="chip ${i===0?'on':''}" data-c="${c.id}" onclick="pick(this,'#tx_cat')">${c.e} ${c.n}</button>`).join('')}</div>
+    <label>Note (optional)</label>
+    <input class="in" id="tx_note" placeholder="${type==='in'?'e.g. washed the car':'e.g. pizza with Sam'}" maxlength="40">
+    <label>When?</label>
+    <input class="in" id="tx_date" type="date" value="${today()}" max="${today()}">
+    <button class="btn wide ${type==='in'?'':'coral'}" style="margin-top:24px" onclick="saveTx('${type}')">Save it</button>`);
+  setTimeout(()=>$('#tx_amt').focus(), 150);
+}
+function saveTx(type){
+  const amt = parseFloat($('#tx_amt').value);
+  if(!(amt > 0)){ toast('Type an amount bigger than zero'); return; }
+  S.tx.push({ id:uid(), type, amt, cat:picked('#tx_cat'), note:$('#tx_note').value.trim(), date:$('#tx_date').value || today() });
+  touchStreak();
+  if(S.tx.length===1) award('first');
+  if(S.tx.filter(x=>x.type==='out').length >= 5 && Object.keys(S.budget).length) award('budget');
+  const inn = monthIn(); if(inn>0 && (inn-monthOut())/inn >= 0.2 && S.tx.length>=4) award('saver');
+  save(); closeSheet(); render();
+  toast(type==='in' ? '💰 ' + money(amt) + ' added' : 'Logged ' + money(amt) + ' spent');
+}
+function delTx(id){ if(!confirm('Delete this entry?')) return; S.tx = S.tx.filter(x=>x.id!==id); save(); render(); }
+
+/* --- budget --- */
+function openBudget(){
+  openSheet(`${head('Build my budget')}
+    <p class="note">Set a monthly limit for each category. Leave a box empty to skip it — you can change any of this later.</p>
+    ${OUT_CATS.map(c=>`
+      <label>${c.e} ${c.n}</label>
+      <input class="in" type="number" inputmode="decimal" min="0" id="bg_${c.id}" value="${S.budget[c.id]||''}" placeholder="No limit">`).join('')}
+    <button class="btn wide" style="margin-top:24px" onclick="saveBudget()">Save my plan</button>`);
+}
+function saveBudget(){
+  const b = {};
+  OUT_CATS.forEach(c => { const v = parseFloat(document.getElementById('bg_'+c.id).value); if(v>0) b[c.id]=v; });
+  S.budget = b;
+  if(Object.keys(b).length) award('budget');
+  save(); closeSheet(); render(); toast('Budget saved');
+}
+
+/* --- goals --- */
+function openGoal(){
+  const emojis = ['🚲','🎧','📱','🎮','👟','⚽','🎸','💻','🎁','✈️','📚','🐶'];
+  openSheet(`${head('New savings goal')}
+    <label>What are you saving for?</label>
+    <input class="in" id="g_name" placeholder="e.g. Blue mountain bike" maxlength="30">
+    <label>How much does it cost?</label>
+    <input class="in big" id="g_amt" type="number" inputmode="decimal" min="1" placeholder="0">
+    <label>Already saved (optional)</label>
+    <input class="in" id="g_saved" type="number" inputmode="decimal" min="0" placeholder="0">
+    <label>Pick a picture</label>
+    <div class="chips" id="g_em">${emojis.map((e,i)=>`<button class="chip ${i===0?'on':''}" data-c="${e}" onclick="pick(this,'#g_em')" style="font-size:19px">${e}</button>`).join('')}</div>
+    <button class="btn wide" style="margin-top:24px" onclick="saveGoal()">Create goal</button>`);
+}
+function saveGoal(){
+  const name = $('#g_name').value.trim(), target = parseFloat($('#g_amt').value);
+  if(!name){ toast('Give your goal a name'); return; }
+  if(!(target>0)){ toast('How much does it cost?'); return; }
+  S.goals.push({ id:uid(), name, target, saved: parseFloat($('#g_saved').value)||0, emoji: picked('#g_em')||'🎯' });
+  save(); closeSheet(); render(); toast('Goal created — now go fill that bar');
+}
+function addToGoal(id){
+  const g = S.goals.find(x=>x.id===id); if(!g) return;
+  openSheet(`${head(g.emoji + ' ' + esc(g.name))}
+    <p class="note">${esc(money(g.saved))} saved of ${esc(money(g.target))} · ${esc(money(Math.max(0,g.target-g.saved)))} to go.</p>
+    <label>How much are you adding?</label>
+    <input class="in big" id="ag_amt" type="number" inputmode="decimal" min="0" placeholder="0">
+    <label style="text-transform:none;letter-spacing:0;font-size:14px;color:var(--ink);font-weight:600;display:flex;align-items:center;gap:10px">
+      <input type="checkbox" id="ag_log" checked style="width:auto;transform:scale(1.25)">Also log this as money moved into savings</label>
+    <button class="btn wide" style="margin-top:24px" onclick="doAddGoal('${id}')">Add savings</button>`);
+  setTimeout(()=>$('#ag_amt').focus(),150);
+}
+function doAddGoal(id){
+  const g = S.goals.find(x=>x.id===id), amt = parseFloat($('#ag_amt').value);
+  if(!(amt>0)){ toast('Type an amount'); return; }
+  g.saved += amt;
+  if($('#ag_log').checked) S.tx.push({ id:uid(), type:'out', amt, cat:'save', note:'Saved for '+g.name, date:today() });
+  if(g.saved >= g.target) { award('goal'); setTimeout(()=>toast('🎉 Goal complete: ' + g.name), 900); }
+  touchStreak(); save(); closeSheet(); render();
+}
+function delGoal(id){ if(!confirm('Delete this goal? Your money is not affected.')) return; S.goals = S.goals.filter(g=>g.id!==id); save(); render(); }
+
+/* =====================================================================
+   CENT — the coin mascot who explains things (unisex on purpose)
+   ===================================================================== */
+function mascot(cls){
+  return `<svg class="mascot ${cls||''}" viewBox="0 0 160 160" aria-hidden="true">
+    <defs><linearGradient id="cg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ffe07a"/><stop offset="1" stop-color="#f5ab13"/></linearGradient></defs>
+    <g class="m-all">
+      <ellipse cx="80" cy="150" rx="34" ry="7" fill="rgba(60,60,130,.13)"/>
+      <rect class="m-arm" x="14" y="86" width="32" height="12" rx="6" fill="#f0a20d"/>
+      <rect x="114" y="86" width="32" height="12" rx="6" fill="#f0a20d"/>
+      <rect x="60" y="126" width="17" height="16" rx="8" fill="#e0940c"/>
+      <rect x="83" y="126" width="17" height="16" rx="8" fill="#e0940c"/>
+      <circle cx="80" cy="76" r="56" fill="url(#cg)"/>
+      <circle cx="80" cy="76" r="46" fill="none" stroke="rgba(255,255,255,.6)" stroke-width="4"
+        stroke-dasharray="7 9" stroke-linecap="round"/>
+      <circle cx="58" cy="68" r="9" fill="#fff"/><circle cx="102" cy="68" r="9" fill="#fff"/>
+      <ellipse class="m-eye" cx="59" cy="69" rx="4.8" ry="5.6" fill="#3a2a06"/>
+      <ellipse class="m-eye" cx="103" cy="69" rx="4.8" ry="5.6" fill="#3a2a06"/>
+      <ellipse cx="42" cy="90" rx="8" ry="5" fill="#ff9db0" opacity=".6"/>
+      <ellipse cx="118" cy="90" rx="8" ry="5" fill="#ff9db0" opacity=".6"/>
+      <ellipse class="m-mouth" cx="80" cy="95" rx="13" ry="9" fill="#7a4a12"/>
+      <ellipse cx="80" cy="99" rx="7" ry="4" fill="#ff7f95"/>
+    </g></svg>`;
+}
+
+/* --- lessons, narrated one beat at a time --- */
+let lessonId = null, lessonStep = 0;
+/* each lesson body is already written as separate paragraphs — reuse them as beats */
+function lessonSteps(l){
+  if(!l._steps){
+    const box = document.createElement('div');
+    box.innerHTML = l.body;
+    l._steps = Array.from(box.children).map(e=>e.outerHTML);
+  }
+  return l._steps;
+}
+function openLesson(id){ lessonId = id; lessonStep = 0; drawLesson(); }
+function drawLesson(){
+  const l = allLessons().find(x=>x.id===lessonId);
+  if(!l){ closeSheet(); return; }   /* age changed mid-lesson — that lesson is no longer in this tier */
+  const steps = lessonSteps(l);
+  if(lessonStep >= steps.length){ drawQuiz(l); return; }
+  const lead = centLine(lessonStep, steps.length);
+  openSheet(`${head(l.e + ' ' + esc(l.t))}
+    <div class="narr">
+      ${mascot('talk')}
+      <div class="say"><p class="cent-says">${esc(lead)}</p>${steps[lessonStep]}</div>
+    </div>
+    <div class="steps">
+      ${lessonStep>0 ? `<button class="btn sm ghost" onclick="stepLesson(-1)">‹ Back</button>` : ''}
+      <button class="btn sm" onclick="stepLesson(1)">${lessonStep===steps.length-1?'Quick check →':'Next →'}</button>
+      ${canSpeak() ? `<button class="spk ${S.speak?'':'off'}" onclick="toggleSpeak()">${S.speak?'🔊 Voice on':'🔇 Voice off'}</button>` : ''}
+      <div class="pg">${steps.map((_,k)=>`<i class="${k===lessonStep?'on':(k<lessonStep?'seen':'')}"></i>`).join('')}</div>
+    </div>
+    <button class="btn wide ghost" style="margin-top:16px" onclick="closeSheet()">Close</button>`);
+  $('#sheetin').scrollTop = 0;
+  speakStep(steps[lessonStep], lead);
+}
+function stepLesson(d){
+  const l = allLessons().find(x=>x.id===lessonId);
+  lessonStep = Math.max(0, Math.min(lessonSteps(l).length, lessonStep + d));
+  drawLesson();
+}
+function drawQuiz(l){
+  openSheet(`${head(l.e + ' ' + esc(l.t))}
+    <div class="narr">
+      ${mascot()}
+      <div class="say" style="min-height:0">
+        <p class="cent-says">Boom — that's the whole lesson! 🎉</p>
+        <p style="margin:0">Let's see what stuck. Get one wrong and nothing bad happens, I promise — I'll just show you the right answer.</p>
+      </div>
+    </div>
+    <h3 style="margin:22px 0 14px;font-size:19px">Quick check</h3>
+    <div id="quiz">${l.quiz.map((q,qi)=>`
+      <div class="qz"><div class="q">${qi+1}. ${esc(q.q)}</div>
+      ${q.o.map((o,oi)=>`<button class="opt" data-q="${qi}" data-o="${oi}" onclick="answer(this,'${l.id}',${qi},${oi},${q.a})">${esc(o)}</button>`).join('')}</div>`).join('')}
+    </div>
+    <div id="qdone"></div>
+    <div class="steps"><button class="btn sm ghost" onclick="stepLesson(-1)">‹ Back to the lesson</button></div>
+    <button class="btn wide ghost" style="margin-top:14px" onclick="closeSheet()">Close</button>`);
+  $('#sheetin').scrollTop = 0;
+  stopSpeak();
+}
+
+/* --- Cent's read-aloud voice: high, bouncy and cartoonish rather than newsreader --- */
+function canSpeak(){ try{ return typeof window.speechSynthesis !== 'undefined'; }catch(e){ return false; } }
+function stopSpeak(){
+  try{ if(canSpeak()) window.speechSynthesis.cancel(); }catch(e){}
+  document.querySelectorAll('.mascot').forEach(m=>m.classList.remove('talk'));
+}
+/* prefer an actual kids' voice if the device has one, then a light, clear one */
+function centVoice(){
+  try{
+    const vs = window.speechSynthesis.getVoices() || [];
+    if(!vs.length) return null;
+    const kid   = vs.find(v=>/child|kid|junior/i.test(v.name));
+    if(kid) return kid;
+    const lang  = (navigator.language||'en').slice(0,2);
+    const light = /samantha|karen|moira|tessa|zira|fiona|google uk english female|google us english/i;
+    return vs.find(v=>light.test(v.name) && v.lang.slice(0,2)===lang)
+        || vs.find(v=>light.test(v.name))
+        || vs.find(v=>v.lang.slice(0,2)===lang && v.localService)
+        || vs[0];
+  }catch(e){ return null; }
+}
+function speakStep(html, lead){
+  if(!S.speak || !canSpeak()) return;
+  try{
+    window.speechSynthesis.cancel();
+    const box = document.createElement('div'); box.innerHTML = html;
+    const words = ((lead ? lead + ' … ' : '') + (box.textContent||'')).trim()
+      .replace(/💡|🕵️|🔒|🛑|✅|🎉/g,'');           // don't read emoji names out loud
+    const u = new SpeechSynthesisUtterance(words);
+    const v = centVoice(); if(v) u.voice = v;
+    u.pitch = 1.6;    // high and friendly — he is a talking coin, not a bank manager
+    u.rate  = 0.94;   // a touch slower than default so younger kids can follow
+    u.volume = 1;
+    u.onend = () => document.querySelectorAll('.mascot').forEach(m=>m.classList.remove('talk'));
+    window.speechSynthesis.speak(u);
+  }catch(e){}
+}
+/* voices load asynchronously on most browsers — this just warms them up */
+try{ if(canSpeak()) window.speechSynthesis.onvoiceschanged = ()=>{}; }catch(e){}
+
+/* what Cent says around each beat, so it feels like a chat and not a page of text */
+function centLine(i, total){
+  const you = nm();
+  if(i === 0) return `Hey ${you}! Let's do this one together — I'll keep it short, promise. 👋`;
+  if(i === total-1) return `Last bit, ${you}. You've basically got this already.`;
+  const mid = [
+    `Okay, this next part is the good stuff.`,
+    `Still with me? Nice one.`,
+    `Right — watch this bit.`,
+    `Fun fact: loads of grown-ups get this wrong.`,
+    `Quick one, then we keep moving.`,
+    `This is the bit I'd tattoo on my face if I had one.`
+  ];
+  return mid[(i-1) % mid.length];
+}
+function toggleSpeak(){
+  S.speak = !S.speak; save();
+  if(!S.speak) stopSpeak();
+  drawLesson();
+}
+const quizState = {};
+function answer(el, lid, qi, oi, correct){
+  const row = el.parentElement;
+  if(row.querySelector('.opt.ok, .opt.no')) return;
+  row.querySelectorAll('.opt').forEach(b => { if(+b.dataset.o === correct) b.classList.add('ok'); });
+  if(oi !== correct) el.classList.add('no');
+  quizState[lid] = quizState[lid] || {};
+  quizState[lid][qi] = (oi === correct);
+  const l = allLessons().find(x=>x.id===lid);
+  if(Object.keys(quizState[lid]).length === l.quiz.length){
+    const right = Object.values(quizState[lid]).filter(Boolean).length;
+    if(!S.done.includes(lid)) S.done.push(lid);
+    if(allLessons().every(x=>S.done.includes(x.id))) award('scholar');
+    save();
+    $('#qdone').innerHTML = `<div class="callout">${
+      right===l.quiz.length ? `🎉 <b>All correct!</b> Cent is doing a little dance. Lesson done — badge progress saved.`
+      : `✅ <b>${right} out of ${l.quiz.length}.</b> The green ones are the right answers. That still counts — you know more than you did five minutes ago. Lesson done!`}</div>`;
+  }
+}
+
+/* --- allowance / parent tools --- */
+function openAllowance(){
+  openSheet(`${head('Set allowance')}
+    <label>Amount</label>
+    <input class="in big" id="al_amt" type="number" inputmode="decimal" min="0" value="${S.allowance.amount||''}" placeholder="0">
+    <label>How often?</label>
+    <div class="chips" id="al_f">${['week','month'].map(f=>`<button class="chip ${(S.allowance.freq||'month')===f?'on':''}" data-c="${f}" onclick="pick(this,'#al_f')">Every ${f}</button>`).join('')}</div>
+    <button class="btn wide" style="margin-top:24px" onclick="saveAllowance()">Save</button>
+    <p class="note" style="text-align:center;margin-top:14px">This is a record only — no real money moves. Use "Log payment" when you actually hand it over.</p>`);
+}
+function saveAllowance(){
+  S.allowance = { amount: parseFloat($('#al_amt').value)||0, freq: picked('#al_f')||'month' };
+  save(); closeSheet(); render(); toast('Allowance saved');
+}
+function payAllowance(){
+  S.tx.push({ id:uid(), type:'in', amt:S.allowance.amount, cat:'pocket', note:'Allowance', date:today() });
+  save(); render(); toast('Logged ' + money(S.allowance.amount) + ' pocket money');
+}
+function openMatch(){
+  openSheet(`${head('🎁 Savings match')}
+    <p class="note">Reward saving, not spending: you add a percentage of whatever your child still has left at the end of the month. It is the same idea as an employer matching a pension — and it teaches the habit far better than a lecture.</p>
+    <label>Match percentage</label>
+    <input class="slider" id="mt_pct" type="range" min="0" max="100" step="5" value="${S.match.pct}" oninput="document.getElementById('mt_lbl').textContent=this.value+'%'">
+    <div class="sval" id="mt_lbl">${S.match.pct}%</div>
+    <label>Monthly cap (optional)</label>
+    <input class="in" id="mt_cap" type="number" inputmode="decimal" min="0" value="${S.match.cap||''}" placeholder="No cap">
+    <label style="text-transform:none;letter-spacing:0;font-size:14px;color:var(--ink);font-weight:600;display:flex;align-items:center;gap:10px">
+      <input type="checkbox" id="mt_on" ${S.match.on?'checked':''} style="width:auto;transform:scale(1.25)">Switch the match on</label>
+    <button class="btn wide" style="margin-top:24px" onclick="saveMatch()">Save</button>
+    <p class="note" style="text-align:center;margin-top:14px">Your child sees the running total on their dashboard. You decide when it is actually paid.</p>`);
+}
+function saveMatch(){
+  S.match.pct = +$('#mt_pct').value;
+  S.match.cap = Math.max(0, parseFloat($('#mt_cap').value)||0);
+  S.match.on  = $('#mt_on').checked;
+  save(); closeSheet(); render();
+  toast(S.match.on ? 'Match on: ' + S.match.pct + '% of what they keep' : 'Match switched off');
+}
+function payMatch(){
+  const amt = matchEarned(); if(!(amt>0)) return;
+  if(!confirm('Log a ' + money(amt) + ' top-up as money received? Do this once you have actually given it to them.')) return;
+  S.tx.push({ id:uid(), type:'in', amt, cat:'bonus', note:'Parent savings match', date:today() });
+  S.match.paid.push(thisMonth());
+  save(); render(); confetti(90);
+  toast('🎁 ' + money(amt) + ' top-up added');
+}
+
+function openNewPin(){
+  openSheet(`${head('New PIN')}
+    <p class="note" style="text-align:center">Type a new 4-digit PIN</p>
+    <div class="pins" id="pins">${[0,1,2,3].map(()=>'<i></i>').join('')}</div>
+    <div class="pad">${[1,2,3,4,5,6,7,8,9].map(n=>`<button onclick="pinTap('${n}')">${n}</button>`).join('')}
+      <button onclick="pinTap('c')" style="font-size:13px;font-weight:800">Clear</button>
+      <button onclick="pinTap('0')">0</button><button onclick="pinTap('b')">⌫</button></div>`);
+}
+function download(name, text, type){
+  const b = new Blob([text], {type}); const u = URL.createObjectURL(b);
+  const a = document.createElement('a'); a.href = u; a.download = name; a.click();
+  setTimeout(()=>URL.revokeObjectURL(u), 1000);
+}
+function exportCSV(){
+  const rows = [['Date','Type','Category','Note','Amount']].concat(
+    [...S.tx].sort((a,b)=>a.date.localeCompare(b.date)).map(x=>[x.date, x.type==='in'?'Money in':'Money out', cat(x.cat).n, x.note||'', x.amt]));
+  download('smart-money-bro.csv', rows.map(r=>r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n'), 'text/csv');
+  toast('CSV downloaded');
+}
+function exportJSON(){ download('smart-money-bro-backup.json', JSON.stringify(S,null,2), 'application/json'); toast('Backup downloaded'); }
+
+/* --- restore a backup file --- */
+function importJSON(){
+  const inp = document.createElement('input');
+  inp.type = 'file'; inp.accept = 'application/json,.json';
+  inp.onchange = () => {
+    const f = inp.files && inp.files[0]; if(!f) return;
+    const r = new FileReader();
+    r.onload = () => {
+      try{
+        const data = JSON.parse(r.result);
+        if(!data || !Array.isArray(data.tx)) throw new Error('not a Smart Money Bro backup');
+        if(!confirm('Restore this backup? Everything currently in the app will be replaced by the file.')) return;
+        S = Object.assign(blank(), data);
+        save(); parentUnlocked = false; tab = 'dashboard'; render();
+        toast('Backup restored — ' + S.tx.length + ' entries');
+      }catch(e){
+        alert('That file could not be read as a Smart Money Bro backup.\n\n' + e.message);
+      }
+    };
+    r.readAsText(f);
+  };
+  inp.click();
+}
+
+/* --- sample data, for trying the app out or demoing it --- */
+const hasSample = () => S.tx.some(x=>x.demo) || S.goals.some(g=>g.demo);
+function loadSample(){
+  if(hasSample()){ toast('Sample data is already loaded'); return; }
+  if(!confirm('Add a few months of made-up entries so you can see a full dashboard? You can remove them again in one click.')) return;
+  const d = new Date(), add = (back, day, type, amt, c, note) => {
+    const dt = new Date(d.getFullYear(), d.getMonth()-back, day);
+    if(dt > d) return;                       // never invent entries in the future
+    S.tx.push({ id:uid(), type, amt, cat:c, note, date:ymd(dt), demo:true });
+  };
+  for(let m=2; m>=0; m--){
+    add(m, 1,'in', 80,'pocket','Monthly pocket money');
+    add(m, 8,'in', 15,'chores','Washed the car');
+    if(m!==0) add(m,19,'in', 20,'gift','From grandma');
+    add(m, 3,'out', 6.5,'snacks','Bubble tea');
+    add(m, 5,'out',12,'games','Game skin');
+    add(m, 9,'out', 4.2,'snacks','Snack after school');
+    add(m,12,'out',18,'fun','Cinema with friends');
+    add(m,15,'out', 8.9,'books','Notebook and pens');
+    add(m,21,'out', 5.5,'snacks','Ice cream');
+    add(m,24,'out',14,'clothes','Socks and a cap');
+    add(m,26,'out',20,'save','Saved for goal');
+  }
+  S.goals.push({ id:uid(), name:'Headphones', target:180, saved:60, emoji:'🎧', demo:true });
+  if(!Object.keys(S.budget).length) S.budget = { snacks:25, games:20, fun:25, books:15, clothes:20 };
+  S.lastDays = [0,1,2].map(k=>{ const x=new Date(); x.setDate(x.getDate()-k); return ymd(x); });
+  save(); render(); toast('Sample data loaded — have a look around');
+}
+function clearSample(){
+  if(!confirm('Remove all the sample entries and the sample goal? Anything you added yourself stays.')) return;
+  S.tx = S.tx.filter(x=>!x.demo);
+  S.goals = S.goals.filter(g=>!g.demo);
+  save(); render(); toast('Sample data removed');
+}
+
+/* =====================================================================
+   ADVANCED TOOLS — tucked away at the bottom of ⚙️ Settings, behind the
+   parent PIN, because restoring and wiping are destructive.
+   ===================================================================== */
+function openTools(){
+  if(!S.profile || parentUnlocked){ toolsSheet(); return; }
+  pinMode = 'tools'; pinBuf = '';
+  openSheet(`${head('🛠️ Advanced tools')}
+    <p class="note" style="text-align:center">Parent PIN, please</p>
+    <div class="pins" id="pins">${[0,1,2,3].map(()=>'<i></i>').join('')}</div>
+    <div class="pad">${[1,2,3,4,5,6,7,8,9].map(n=>`<button onclick="pinTap('${n}')">${n}</button>`).join('')}
+      <button onclick="pinTap('c')" style="font-size:13px;font-weight:800">Clear</button>
+      <button onclick="pinTap('0')">0</button><button onclick="pinTap('b')">⌫</button></div>`);
+}
+function toolsSheet(){
+  openSheet(`${head('🛠️ Advanced tools')}
+    <p class="note">Tucked away at the bottom of ⚙️ Settings so it stays out of the way. Not for children.</p>
+
+    <label>Backups</label>
+    <div class="gbtns" style="margin-top:0">
+      <button class="btn sm ghost" onclick="exportJSON()">⬇️ Download backup</button>
+      <button class="btn sm" onclick="importJSON()">⬆️ Restore from file</button>
+    </div>
+    <p class="note" style="margin-top:8px">Restoring replaces everything currently in the app. The file is checked before anything is touched.</p>
+
+    <label>Test data</label>
+    <div class="gbtns" style="margin-top:0">
+      ${hasSample()
+        ? `<button class="btn sm ghost" onclick="clearSample()">🧹 Remove sample data</button>`
+        : `<button class="btn sm ghost" onclick="loadSample()">🎬 Load sample data</button>`}
+      <button class="btn sm ghost" onclick="exportCSV()">📄 Export CSV</button>
+    </div>
+    <p class="note" style="margin-top:8px">Sample entries are tagged, so removing them never touches anything real.</p>
+
+    <label>Profile</label>
+    <div class="gbtns" style="margin-top:0">
+      <button class="btn sm ghost" onclick="switchKid()">👋 Switch kid (keep data)</button>
+      <button class="btn sm danger" onclick="wipe()">💣 Erase everything</button>
+    </div>
+
+    <p class="note" style="margin-top:18px">Currently holding <b>${S.tx.length}</b> entries, <b>${S.goals.length}</b> goals,
+      <b>${S.badges.length}</b> badges${hasSample()?` · <b>${S.tx.filter(x=>x.demo).length}</b> of those entries are sample data`:''}.</p>
+    <button class="btn wide ghost" style="margin-top:14px" onclick="closeSheet()">Done</button>`);
+}
+
+/* --- clear the profile but keep the money data --- */
+function switchKid(){
+  if(!confirm('Clear the name, age and avatar so someone else can set up?\n\nAll money entries, goals and badges are kept.')) return;
+  S.profile = null; save(); closeSheet(); parentUnlocked = false; tab = 'dashboard'; render();
+}
+function wipe(){
+  if(!confirm('Erase ALL data — entries, goals, budget and lessons? This cannot be undone.')) return;
+  if(!confirm('Really sure? Take a backup first if you are not.')) return;
+  localStorage.removeItem(KEY); S = blank(); parentUnlocked = false; tab='dashboard'; render();
+}
+
+/* --- settings --- */
+function openSettings(){
+  openSheet(`${head('My settings')}
+    <label>Name</label><input class="in" id="st_name" value="${esc(S.profile.name)}" maxlength="20">
+    <label>Age</label>
+    <select class="in" id="st_age">${[9,10,11,12,13,14,15,16,17,18].map(a=>`<option value="${a}" ${a===S.profile.age?'selected':''}>${a}</option>`).join('')}</select>
+    <label>Money symbol</label>
+    <div class="chips" id="st_cur">${CURRENCIES.map(c=>`<button class="chip ${c===S.profile.currency?'on':''}" data-c="${c}" onclick="pick(this,'#st_cur')">${c}</button>`).join('')}</div>
+    <label>Buddy</label>
+    <div class="chips" id="st_av">${AVATARS.map(a=>`<button class="chip ${a===S.profile.avatar?'on':''}" data-c="${a}" onclick="pick(this,'#st_av')" style="font-size:19px">${a}</button>`).join('')}</div>
+    <button class="btn wide" style="margin-top:24px" onclick="saveSettings()">Save</button>
+    <p class="note" style="text-align:center;margin-top:14px">Lessons change with your age, so keep it up to date.</p>
+    <hr style="border:0;border-top:2px solid var(--line);margin:20px 0 16px">
+    <button class="btn wide ghost" onclick="switchKid()">👋 Switch kid — start fresh</button>
+    <p class="note" style="text-align:center;margin-top:10px">Clears the name, age and avatar so someone else can set up.
+      All the money entries, goals and badges stay exactly where they are.</p>
+    ${SYNC_URL ? `
+    <hr style="border:0;border-top:2px solid var(--line);margin:20px 0 16px">
+    <label>Sharing with ${esc(SYNC_OWNER)}</label>
+    ${S.share.on ? `
+      <p class="note">On, as <b>${esc(S.share.nick)}</b>.
+        ${S.share.last ? 'Last sent ' + new Date(S.share.last).toLocaleString() + '.' : 'Nothing sent yet.'}
+        ${S.share.err ? `<br><span style="color:var(--bad)">Last attempt failed: ${esc(S.share.err)}</span>` : ''}</p>
+      <div class="gbtns" style="margin-top:12px">
+        <button class="btn sm ghost" onclick="sendShare(false)">Send now</button>
+        <button class="btn sm danger" onclick="stopSharing()">Stop sharing</button>
+      </div>`
+    : `<p class="note">Off. Nothing is being sent anywhere.</p>
+      <input class="in" id="sh_nick" maxlength="20" placeholder="Nickname" style="margin-top:10px">
+      <button class="btn sm grape" style="margin-top:10px" onclick="startSharing()">Start sharing</button>`}
+    ` : ''}
+    <button class="quiet" onclick="openTools()">🛠️ Advanced tools</button>`);
+}
+function saveSettings(){
+  const n = $('#st_name').value.trim(); if(n) S.profile.name = n;
+  S.profile.age = +$('#st_age').value;
+  S.profile.currency = picked('#st_cur') || S.profile.currency;
+  S.profile.avatar = picked('#st_av') || S.profile.avatar;
+  save(); closeSheet(); render(); toast('Saved');
+}
+
+/* ---------------- install manifest (PWA-lite) ---------------- */
+try{
+  const mf = { name:'Smart Money Bro', short_name:'Money Bro', start_url:'./#dashboard', display:'standalone',
+    background_color:'#ffffff', theme_color:'#0e7a86', description:'Pocket money command center for kids 9-18',
+    icons:[{src:"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230e7a86'/%3E%3Ctext x='50' y='73' font-size='58' text-anchor='middle'%3E%F0%9F%92%B0%3C/text%3E%3C/svg%3E",
+      sizes:'512x512', type:'image/svg+xml', purpose:'any'}] };
+  const link = document.createElement('link');
+  link.rel = 'manifest';
+  link.href = URL.createObjectURL(new Blob([JSON.stringify(mf)], {type:'application/manifest+json'}));
+  document.head.appendChild(link);
+}catch(e){}
+
+/* ---------------- boot ---------------- */
+load();
+const h0 = location.hash.replace('#','');
+if(TABS.some(t=>t[0]===h0)) tab = h0;
+render();
+</script>
+</body>
+</html>
